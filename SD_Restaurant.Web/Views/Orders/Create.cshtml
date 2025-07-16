@@ -1,0 +1,71 @@
+@model SD_Restaurant.Web.Models.OrderViewModel
+
+@{
+    ViewData["Title"] = "Yeni Sipariş";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Yeni Sipariş Ekle</h3>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Create">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="CustomerId" class="control-label">Müşteri ID</label>
+                                    <input asp-for="CustomerId" class="form-control" />
+                                    <span asp-validation-for="CustomerId" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="TableId" class="control-label">Masa ID</label>
+                                    <input asp-for="TableId" class="form-control" />
+                                    <span asp-validation-for="TableId" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="OrderDate" class="control-label">Sipariş Tarihi</label>
+                                    <input asp-for="OrderDate" class="form-control" type="datetime-local" />
+                                    <span asp-validation-for="OrderDate" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="TotalAmount" class="control-label">Toplam Tutar</label>
+                                    <input asp-for="TotalAmount" class="form-control" />
+                                    <span asp-validation-for="TotalAmount" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Status" class="control-label">Durum</label>
+                            <input asp-for="Status" class="form-control" />
+                            <span asp-validation-for="Status" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Notes" class="control-label">Notlar</label>
+                            <textarea asp-for="Notes" class="form-control" rows="3"></textarea>
+                            <span asp-validation-for="Notes" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <input type="submit" value="Kaydet" class="btn btn-primary" />
+                            <a asp-action="Index" class="btn btn-secondary">Geri Dön</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+} 

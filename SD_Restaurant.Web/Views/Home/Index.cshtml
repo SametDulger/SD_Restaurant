@@ -1,0 +1,224 @@
+﻿@{
+    ViewData["Title"] = "Ana Sayfa";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="jumbotron bg-primary text-white rounded p-4 mb-4">
+                <h1 class="display-4">
+                    <i class="fas fa-utensils"></i> SD Restaurant Yönetim Sistemi
+                </h1>
+                <p class="lead">Restoranınızı kolayca yönetin. Siparişler, rezervasyonlar, stoklar ve daha fazlası.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card bg-primary text-white h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h5 class="card-title">Ürünler</h5>
+                            <p class="card-text">Menü yönetimi</p>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-box fa-3x"></i>
+                        </div>
+                    </div>
+                    <a asp-controller="Products" asp-action="Index" class="btn btn-light btn-sm">
+                        <i class="fas fa-arrow-right"></i> Yönet
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card bg-success text-white h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h5 class="card-title">Siparişler</h5>
+                            <p class="card-text">Sipariş takibi</p>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-shopping-cart fa-3x"></i>
+                        </div>
+                    </div>
+                    <a asp-controller="Orders" asp-action="Index" class="btn btn-light btn-sm">
+                        <i class="fas fa-arrow-right"></i> Görüntüle
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card bg-info text-white h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h5 class="card-title">Rezervasyonlar</h5>
+                            <p class="card-text">Masa rezervasyonları</p>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-calendar-check fa-3x"></i>
+                        </div>
+                    </div>
+                    <a asp-controller="Reservations" asp-action="Index" class="btn btn-light btn-sm">
+                        <i class="fas fa-arrow-right"></i> Yönet
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card bg-warning text-white h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h5 class="card-title">Stoklar</h5>
+                            <p class="card-text">Envanter takibi</p>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-warehouse fa-3x"></i>
+                        </div>
+                    </div>
+                    <a asp-controller="Stocks" asp-action="Index" class="btn btn-light btn-sm">
+                        <i class="fas fa-arrow-right"></i> Kontrol Et
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-cogs"></i> Hızlı İşlemler
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <a asp-controller="Categories" asp-action="Create" class="btn btn-outline-primary btn-block">
+                                <i class="fas fa-plus"></i> Yeni Kategori
+                            </a>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <a asp-controller="Products" asp-action="Create" class="btn btn-outline-success btn-block">
+                                <i class="fas fa-plus"></i> Yeni Ürün
+                            </a>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <a asp-controller="Customers" asp-action="Create" class="btn btn-outline-info btn-block">
+                                <i class="fas fa-plus"></i> Yeni Müşteri
+                            </a>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <a asp-controller="Reservations" asp-action="Create" class="btn btn-outline-warning btn-block">
+                                <i class="fas fa-plus"></i> Yeni Rezervasyon
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-chart-bar"></i> Sistem Durumu
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <div class="text-center">
+                                <h4 class="text-primary">0</h4>
+                                <small class="text-muted">Aktif Sipariş</small>
+                            </div>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <div class="text-center">
+                                <h4 class="text-success">0</h4>
+                                <small class="text-muted">Bugünkü Rezervasyon</small>
+                            </div>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <div class="text-center">
+                                <h4 class="text-info">0</h4>
+                                <small class="text-muted">Toplam Müşteri</small>
+                            </div>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <div class="text-center">
+                                <h4 class="text-warning">0</h4>
+                                <small class="text-muted">Düşük Stok</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-list"></i> Tüm Modüller
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <h6><i class="fas fa-tags text-primary"></i> Kategoriler</h6>
+                            <a asp-controller="Categories" asp-action="Index" class="btn btn-sm btn-outline-primary">Görüntüle</a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <h6><i class="fas fa-box text-success"></i> Ürünler</h6>
+                            <a asp-controller="Products" asp-action="Index" class="btn btn-sm btn-outline-success">Görüntüle</a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <h6><i class="fas fa-book-open text-info"></i> Tarifler</h6>
+                            <a asp-controller="Recipes" asp-action="Index" class="btn btn-sm btn-outline-info">Görüntüle</a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <h6><i class="fas fa-warehouse text-warning"></i> Stoklar</h6>
+                            <a asp-controller="Stocks" asp-action="Index" class="btn btn-sm btn-outline-warning">Görüntüle</a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <h6><i class="fas fa-chair text-secondary"></i> Masalar</h6>
+                            <a asp-controller="Tables" asp-action="Index" class="btn btn-sm btn-outline-secondary">Görüntüle</a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <h6><i class="fas fa-users text-dark"></i> Müşteriler</h6>
+                            <a asp-controller="Customers" asp-action="Index" class="btn btn-sm btn-outline-dark">Görüntüle</a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <h6><i class="fas fa-user-tie text-danger"></i> Çalışanlar</h6>
+                            <a asp-controller="Employees" asp-action="Index" class="btn btn-sm btn-outline-danger">Görüntüle</a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <h6><i class="fas fa-calendar-check text-primary"></i> Rezervasyonlar</h6>
+                            <a asp-controller="Reservations" asp-action="Index" class="btn btn-sm btn-outline-primary">Görüntüle</a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <h6><i class="fas fa-shopping-cart text-success"></i> Siparişler</h6>
+                            <a asp-controller="Orders" asp-action="Index" class="btn btn-sm btn-outline-success">Görüntüle</a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <h6><i class="fas fa-credit-card text-info"></i> Ödemeler</h6>
+                            <a asp-controller="Payments" asp-action="Index" class="btn btn-sm btn-outline-info">Görüntüle</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

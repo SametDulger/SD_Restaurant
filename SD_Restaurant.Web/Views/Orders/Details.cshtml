@@ -1,0 +1,121 @@
+@model SD_Restaurant.Web.Models.OrderViewModel
+
+@{
+    ViewData["Title"] = "Sipariş Detayı";
+}
+
+<div class="container">
+    <h2>Sipariş Detayı</h2>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Sipariş #@Model.Id</h4>
+                    <hr />
+                    <dl class="row">
+                        <dt class="col-sm-3">Sipariş Numarası:</dt>
+                        <dd class="col-sm-9">@Model.OrderNumber</dd>
+
+                        <dt class="col-sm-3">Müşteri:</dt>
+                        <dd class="col-sm-9">@Model.CustomerName</dd>
+
+                        <dt class="col-sm-3">Masa:</dt>
+                        <dd class="col-sm-9">@Model.TableNumber</dd>
+
+                        <dt class="col-sm-3">Personel:</dt>
+                        <dd class="col-sm-9">@Model.EmployeeName</dd>
+
+                        <dt class="col-sm-3">Sipariş Tarihi:</dt>
+                        <dd class="col-sm-9">@Model.OrderDate.ToString("dd/MM/yyyy HH:mm")</dd>
+
+                        <dt class="col-sm-3">Durum:</dt>
+                        <dd class="col-sm-9">
+                            <span class="badge badge-@(Model.Status == "Tamamlandı" ? "success" : Model.Status == "Hazırlanıyor" ? "warning" : "info")">
+                                @Model.Status
+                            </span>
+                        </dd>
+
+                        <dt class="col-sm-3">Ara Toplam:</dt>
+                        <dd class="col-sm-9">@Model.TotalAmount.ToString("C")</dd>
+
+                        <dt class="col-sm-3">KDV:</dt>
+                        <dd class="col-sm-9">@Model.TaxAmount.ToString("C")</dd>
+
+                        <dt class="col-sm-3">İndirim:</dt>
+                        <dd class="col-sm-9">@Model.DiscountAmount.ToString("C")</dd>
+
+                        <dt class="col-sm-3">Genel Toplam:</dt>
+                        <dd class="col-sm-9"><strong>@Model.FinalAmount.ToString("C")</strong></dd>
+
+                        <dt class="col-sm-3">Para Birimi:</dt>
+                        <dd class="col-sm-9">@Model.Currency</dd>
+
+                        @if (!string.IsNullOrEmpty(Model.Notes))
+                        {
+                            <dt class="col-sm-3">Notlar:</dt>
+                            <dd class="col-sm-9">@Model.Notes</dd>
+                        }
+                    </dl>
+                </div>
+            </div>
+
+            @if (Model.OrderItems != null && Model.OrderItems.Any())
+            {
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <h5>Sipariş Kalemleri</h5>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Ürün</th>
+                                    <th>Miktar</th>
+                                    <th>Birim Fiyat</th>
+                                    <th>Toplam</th>
+                                    <th>Durum</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.OrderItems)
+                                {
+                                    <tr>
+                                        <td>@item.ProductName</td>
+                                        <td>@item.Quantity</td>
+                                        <td>@item.UnitPrice.ToString("C")</td>
+                                        <td>@item.TotalAmount.ToString("C")</td>
+                                        <td>
+                                            <span class="badge badge-@(item.Status == "Hazır" ? "success" : "warning")">
+                                                @item.Status
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    @if (!string.IsNullOrEmpty(item.SpecialInstructions))
+                                    {
+                                        <tr>
+                                            <td colspan="5" class="text-muted">
+                                                <small><strong>Özel Talimatlar:</strong> @item.SpecialInstructions</small>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="mt-3">
+        <form asp-action="Process" asp-route-id="@Model.Id" method="post" style="display: inline;">
+            <button type="submit" class="btn btn-success" onclick="return confirm('Siparişi işlemek istediğinizden emin misiniz?')">
+                Siparişi İşle
+            </button>
+        </form>
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Düzenle</a>
+        <a asp-action="Index" class="btn btn-secondary">Listeye Dön</a>
+        <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">Sil</a>
+    </div>
+</div> 

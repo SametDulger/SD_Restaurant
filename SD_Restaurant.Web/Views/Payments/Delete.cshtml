@@ -1,0 +1,43 @@
+@model SD_Restaurant.Web.Models.PaymentViewModel
+
+@{
+    ViewData["Title"] = "Ödeme Sil";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Ödeme Sil</h3>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-danger">
+                        <h4>Bu ödemeyi silmek istediğinizden emin misiniz?</h4>
+                    </div>
+                    <dl class="row">
+                        <dt class="col-sm-2">ID</dt>
+                        <dd class="col-sm-10">@Model.Id</dd>
+                        <dt class="col-sm-2">Sipariş ID</dt>
+                        <dd class="col-sm-10">@Model.OrderId</dd>
+                        <dt class="col-sm-2">Tutar</dt>
+                        <dd class="col-sm-10">@Model.Amount.ToString("C")</dd>
+                        <dt class="col-sm-2">Ödeme Yöntemi</dt>
+                        <dd class="col-sm-10">@Model.PaymentMethod</dd>
+                        <dt class="col-sm-2">Ödeme Tarihi</dt>
+                        <dd class="col-sm-10">@Model.PaymentDate.ToString("dd/MM/yyyy HH:mm")</dd>
+                        <dt class="col-sm-2">Durum</dt>
+                        <dd class="col-sm-10">@Model.Status</dd>
+                        <dt class="col-sm-2">Notlar</dt>
+                        <dd class="col-sm-10">@Model.Notes</dd>
+                    </dl>
+                    <form asp-action="Delete">
+                        <input type="hidden" asp-for="Id" />
+                        <input type="submit" value="Sil" class="btn btn-danger" />
+                        <a asp-action="Index" class="btn btn-secondary">Geri Dön</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 

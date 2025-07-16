@@ -1,0 +1,42 @@
+@model List<SD_Restaurant.Web.Models.ProductViewModel>
+
+@{
+    ViewData["Title"] = "Ürünler";
+}
+
+<h2>Ürünler</h2>
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger">@ViewBag.Error</div>
+}
+else if (Model != null && Model.Count > 0)
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Adı</th>
+                <th>Açıklama</th>
+                <th>Fiyat</th>
+                <th>Birim</th>
+                <th>Kategori</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td>@item.Description</td>
+                <td>@item.Price.ToString("C")</td>
+                <td>@item.Unit</td>
+                <td>@item.CategoryName</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+else
+{
+    <div>Hiç ürün bulunamadı.</div>
+} 
