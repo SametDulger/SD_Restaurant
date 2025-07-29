@@ -133,7 +133,7 @@ appsettings.Production.json
 appsettings.Staging.json
 appsettings.Local.json
 appsettings.*.json
-!appsettings.json
+appsettings.json
 !appsettings.Example.json
 
 # Docker
