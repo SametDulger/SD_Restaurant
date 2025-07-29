@@ -1,0 +1,168 @@
+﻿@model SD_Restaurant.Web.Models.CategoryViewModel
+
+@{
+    ViewData["Title"] = "Kategori Detayı";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 mb-0 text-dark">
+                <i class="fas fa-tag me-2"></i>@Model.Name
+            </h1>
+            <p class="text-muted">Kategori detayları ve bilgileri</p>
+        </div>
+        <div>
+            <a asp-action="Index" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Geri Dön
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-info-circle me-2"></i>Kategori Bilgileri
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <dl class="row">
+                                <dt class="col-sm-4 text-muted">Kategori ID:</dt>
+                                <dd class="col-sm-8">
+                                    <strong>#@Model.Id</strong>
+                                </dd>
+
+                                <dt class="col-sm-4 text-muted">Kategori Adı:</dt>
+                                <dd class="col-sm-8">
+                                    <span class="badge bg-primary fs-6">@Model.Name</span>
+                                </dd>
+                            </dl>
+                        </div>
+                        <div class="col-md-6">
+                            <dl class="row">
+                                <dt class="col-sm-4 text-muted">Durum:</dt>
+                                <dd class="col-sm-8">
+                                    <span class="badge bg-success">Aktif</span>
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(Model.Description))
+                    {
+                        <div class="mt-4">
+                            <h6 class="text-primary">ğŸ“ Açıklama</h6>
+                            <div class="bg-light p-3 rounded">
+                                @Model.Description
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Category Analysis -->
+            <div class="card shadow-sm mt-4">
+                <div class="card-header bg-success text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-chart-bar me-2"></i>Kategori Analizi
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-md-4">
+                            <div class="border-end">
+                                <div class="h4 text-primary">@Model.Id</div>
+                                <div class="text-muted">Kategori ID</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="border-end">
+                                <div class="h4 text-warning">@Model.Name</div>
+                                <div class="text-muted">Kategori Adı</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="h4 text-success">Aktif</div>
+                            <div class="text-muted">Durum</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-chart-pie me-2"></i>Kategori Özeti
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-3">
+                        <i class="fas fa-tag fa-3x text-primary mb-2"></i>
+                        <h5>@Model.Name</h5>
+                        <p class="text-muted">Kategori #@Model.Id</p>
+                    </div>
+                    
+                    <div class="list-group list-group-flush">
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>Kategori Adı</span>
+                            <span class="badge bg-primary">@Model.Name</span>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>Durum</span>
+                            <span class="badge bg-success">Aktif</span>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>ID</span>
+                            <span class="badge bg-info">@Model.Id</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mt-3">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-tools me-2"></i>Hızlı İşlemler
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary">
+                            <i class="fas fa-edit me-2"></i>Kategori Düzenle
+                        </a>
+                        <a asp-controller="Products" asp-action="Index" class="btn btn-outline-info">
+                            <i class="fas fa-utensils me-2"></i>Ürünleri Görüntüle
+                        </a>
+                        <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-outline-danger">
+                            <i class="fas fa-trash me-2"></i>Kategoriyi Sil
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mt-3">
+                <div class="card-header bg-info text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-list me-2"></i>İstatistikler
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="text-center">
+                        <i class="fas fa-chart-bar fa-2x text-info mb-2"></i>
+                        <p class="mb-0">Bu kategorideki ürün sayısı</p>
+                        <div class="h4 text-primary mt-2">0</div>
+                        <small class="text-muted">ürün</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 
+
+

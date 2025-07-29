@@ -1,4 +1,4 @@
-@model SD_Restaurant.Web.Models.RecipeViewModel
+﻿@model SD_Restaurant.Web.Models.RecipeViewModel
 
 @{
     ViewData["Title"] = "Tarif Düzenle";
@@ -17,15 +17,15 @@
                         <input type="hidden" asp-for="Id" />
                         <div class="row">
                             <div class="col-md-6">
-                                <div class="form-group">
-                                    <label asp-for="ProductId" class="control-label">Ürün ID</label>
+                                <div class="mb-3">
+                                    <label asp-for="ProductId" class="form-label">Ürün ID</label>
                                     <input asp-for="ProductId" class="form-control" />
                                     <span asp-validation-for="ProductId" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <div class="form-group">
-                                    <label asp-for="IngredientName" class="control-label">Malzeme Adı</label>
+                                <div class="mb-3">
+                                    <label asp-for="IngredientName" class="form-label">Malzeme Adı</label>
                                     <input asp-for="IngredientName" class="form-control" />
                                     <span asp-validation-for="IngredientName" class="text-danger"></span>
                                 </div>
@@ -33,26 +33,26 @@
                         </div>
                         <div class="row">
                             <div class="col-md-6">
-                                <div class="form-group">
-                                    <label asp-for="Quantity" class="control-label">Miktar</label>
+                                <div class="mb-3">
+                                    <label asp-for="Quantity" class="form-label">Miktar</label>
                                     <input asp-for="Quantity" class="form-control" />
                                     <span asp-validation-for="Quantity" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <div class="form-group">
-                                    <label asp-for="Unit" class="control-label">Birim</label>
+                                <div class="mb-3">
+                                    <label asp-for="Unit" class="form-label">Birim</label>
                                     <input asp-for="Unit" class="form-control" />
                                     <span asp-validation-for="Unit" class="text-danger"></span>
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label asp-for="Instructions" class="control-label">Talimatlar</label>
+                        <div class="mb-3">
+                            <label asp-for="Instructions" class="form-label">Talimatlar</label>
                             <textarea asp-for="Instructions" class="form-control" rows="3"></textarea>
                             <span asp-validation-for="Instructions" class="text-danger"></span>
                         </div>
-                        <div class="form-group">
+                        <div class="mb-3">
                             <input type="submit" value="Güncelle" class="btn btn-primary" />
                             <a asp-action="Index" class="btn btn-secondary">Geri Dön</a>
                         </div>
@@ -65,3 +65,5 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 } 
+
+

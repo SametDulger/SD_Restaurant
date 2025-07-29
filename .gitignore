@@ -1,6 +1,13 @@
-# .NET Core build outputs
+# .NET Core / .NET 9.0 build outputs
 bin/
 obj/
+*.dll
+*.exe
+*.pdb
+*.cache
+*.deps.json
+*.runtimeconfig.json
+*.runtimeconfig.dev.json
 
 # Visual Studio files
 .vs/
@@ -8,13 +15,23 @@ obj/
 *.suo
 *.userosscache
 *.sln.docstates
+*.userprefs
+*.DotSettings
 
 # Visual Studio Code
 .vscode/
+*.code-workspace
+.vscode/settings.json
+.vscode/launch.json
+.vscode/tasks.json
 
 # JetBrains Rider
 .idea/
 *.sln.iml
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/dictionaries/
+.idea/shelf/
 
 # Build results
 [Dd]ebug/
@@ -39,6 +56,7 @@ bld/
 project.assets.json
 project.nuget.cache
 *.dgspec.json
+packages.lock.json
 
 # User-specific files
 *.rsuser
@@ -67,6 +85,8 @@ ehthumbs.db
 # Logs
 *.log
 logs/
+Logs/
+log-*.txt
 
 # Database files
 *.db
@@ -74,23 +94,313 @@ logs/
 *.db-wal
 *.sqlite
 *.sqlite3
+*.mdf
+*.ldf
+*.ndf
+
+# SQL Server
+*.mdf
+*.ldf
+*.ndf
+
+# Entity Framework
+Migrations/*.Designer.cs
 
 # Temporary files
 *.tmp
 *.temp
 *.cache
+*.swp
+*.swo
 
 # Backup files
 *.bak
 *.backup
+*.old
 
-# Environment files
+# Environment files - CRITICAL FOR SECURITY
 .env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
+.env.staging.local
+.env.*.local
 
-# Application specific
+# Application specific - CRITICAL FOR SECURITY
 appsettings.Development.json
-appsettings.Production.json 
+appsettings.Production.json
+appsettings.Staging.json
+appsettings.Local.json
+appsettings.*.json
+!appsettings.json
+!appsettings.Example.json
+
+# Docker
+.dockerignore
+Dockerfile.dev
+docker-compose.override.yml
+docker-compose.local.yml
+docker-compose.prod.yml
+
+# Node.js (if using frontend tools)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# Coverage reports
+*.coverage
+*.coveragexml
+coverage/
+*.opencover.xml
+
+# Test results
+TestResults/
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+TestResult.xml
+
+# Performance monitoring
+*.perf
+
+# Profiling
+*.prof
+
+# Memory dumps
+*.dmp
+*.mdmp
+
+# Crash dumps
+*.crash
+
+# IIS
+*.iislog
+
+# Application Insights
+ApplicationInsights.config
+
+# Azure
+.azure/
+azure-settings.json
+
+# AWS
+.aws/
+aws-credentials.json
+
+# Local development - CRITICAL FOR SECURITY
+local.settings.json
+local.settings.*.json
+secrets.json
+secrets.*.json
+
+# SSL certificates - CRITICAL FOR SECURITY
+*.pfx
+*.p12
+*.key
+*.crt
+*.cer
+*.pem
+*.p7b
+*.p7c
+
+# API Keys and Secrets - CRITICAL FOR SECURITY
+secrets.json
+*.key
+*.pem
+api-keys.json
+connection-strings.json
+jwt-secrets.json
+
+# IDE specific
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Project specific
+# Restaurant management system specific files
+uploads/
+temp/
+cache/
+sessions/
+wwwroot/uploads/
+wwwroot/temp/
+
+# Backup and archive files
+*.zip
+*.tar.gz
+*.rar
+*.7z
+*.tar
+*.gz
+
+# Documentation build
+docs/_build/
+docs/.doctrees/
+
+# Jupyter Notebooks
+.ipynb_checkpoints
+
+# PyCharm
+.idea/
+
+# Vim
+*.swp
+*.swo
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# Local configuration overrides - CRITICAL FOR SECURITY
+local.config.json
+local.config.*.json
+config.local.json
+settings.local.json
+
+# Database connection strings - CRITICAL FOR SECURITY
+connection-strings.json
+database-credentials.json
+
+# JWT and Authentication secrets - CRITICAL FOR SECURITY
+jwt-secrets.json
+auth-secrets.json
+authentication.json
+
+# Third-party API keys - CRITICAL FOR SECURITY
+api-keys.json
+external-apis.json
+third-party-credentials.json
+
+# Payment processing secrets - CRITICAL FOR SECURITY
+payment-keys.json
+stripe-keys.json
+paypal-credentials.json
+
+# Email configuration - CRITICAL FOR SECURITY
+email-config.json
+smtp-credentials.json
+mail-settings.json
+
+# Monitoring and logging secrets
+monitoring-keys.json
+logging-credentials.json
+
+# Development tools
+*.vscode/settings.json
+*.vscode/launch.json
+*.vscode/tasks.json
+
+# Git hooks
+.git/hooks/
+
+# Temporary build artifacts
+build/
+dist/
+out/
+
+# Runtime files
+*.pid
+*.seed
+*.pid.lock
+
+# Dependency directories
+jspm_packages/
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Microbundle cache
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
+
+# parcel-bundler cache (https://parceljs.org/)
+.cache
+.parcel-cache
+
+# Next.js build output
+.next
+
+# Nuxt.js build / generate output
+.nuxt
+dist
+
+# Gatsby files
+.cache/
+public
+
+# Storybook build outputs
+.out
+.storybook-out
+
+# Temporary folders
+tmp/
+temp/
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux
+*~
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Production specific
+production/
+staging/
+deployment/ 

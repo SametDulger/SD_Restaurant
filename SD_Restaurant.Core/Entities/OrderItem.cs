@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using SD_Restaurant.Core.Enums;
 
 namespace SD_Restaurant.Core.Entities
 {
@@ -23,6 +24,6 @@ namespace SD_Restaurant.Core.Entities
         [MaxLength(200)]
         public string? SpecialInstructions { get; set; }
         
-        public string? Status { get; set; } // Beklemede, Hazırlanıyor, Tamamlandı
+        public OrderStatus Status { get; set; } = OrderStatus.Pending;
     }
 } 

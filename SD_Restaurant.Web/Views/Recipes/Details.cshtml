@@ -1,0 +1,189 @@
+﻿@model SD_Restaurant.Web.Models.RecipeViewModel
+
+@{
+    ViewData["Title"] = "Tarif Detayı";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 mb-0 text-dark">
+                <i class="fas fa-book-open me-2"></i>Tarif Detayı
+            </h1>
+            <p class="text-muted">Ürün tarifi ve malzeme bilgileri</p>
+        </div>
+        <div>
+            <a asp-action="Index" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Geri Dön
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-info-circle me-2"></i>Tarif Bilgileri
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <dl class="row">
+                                <dt class="col-sm-4 text-muted">Tarif ID:</dt>
+                                <dd class="col-sm-8">
+                                    <strong>#@Model.Id</strong>
+                                </dd>
+
+                                <dt class="col-sm-4 text-muted">Ürün:</dt>
+                                <dd class="col-sm-8">
+                                    <span class="badge bg-info">@Model.ProductName</span>
+                                </dd>
+
+                                <dt class="col-sm-4 text-muted">Malzeme:</dt>
+                                <dd class="col-sm-8">
+                                    <span class="badge bg-success">@Model.IngredientName</span>
+                                </dd>
+
+                                <dt class="col-sm-4 text-muted">Miktar:</dt>
+                                <dd class="col-sm-8">
+                                    <span class="badge bg-warning fs-6">@Model.Quantity @Model.Unit</span>
+                                </dd>
+                            </dl>
+                        </div>
+                        <div class="col-md-6">
+                            <dl class="row">
+                                <dt class="col-sm-4 text-muted">Birim:</dt>
+                                <dd class="col-sm-8">
+                                    <span class="badge bg-primary">@Model.Unit</span>
+                                </dd>
+
+                                <dt class="col-sm-4 text-muted">Ürün ID:</dt>
+                                <dd class="col-sm-8">@Model.ProductId</dd>
+                            </dl>
+                        </div>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(Model.Instructions))
+                    {
+                        <div class="mt-4">
+                            <h6 class="text-primary">ğŸ“ Hazırlama Talimatları</h6>
+                            <div class="bg-light p-3 rounded">
+                                @Model.Instructions
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Recipe Analysis -->
+            <div class="card shadow-sm mt-4">
+                <div class="card-header bg-success text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-chart-bar me-2"></i>Tarif Analizi
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-md-4">
+                            <div class="border-end">
+                                <div class="h4 text-primary">@Model.Quantity</div>
+                                <div class="text-muted">Malzeme Miktarı</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="border-end">
+                                <div class="h4 text-warning">@Model.Unit</div>
+                                <div class="text-muted">Birim</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="h4 text-success">@Model.IngredientName</div>
+                            <div class="text-muted">Malzeme Adı</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-chart-pie me-2"></i>Tarif Özeti
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-3">
+                        <i class="fas fa-book-open fa-3x text-primary mb-2"></i>
+                        <h5>Tarif #@Model.Id</h5>
+                        <p class="text-muted">@Model.ProductName</p>
+                    </div>
+                    
+                    <div class="list-group list-group-flush">
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>Malzeme</span>
+                            <span class="badge bg-success">@Model.IngredientName</span>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>Miktar</span>
+                            <span class="badge bg-warning">@Model.Quantity @Model.Unit</span>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>Ürün</span>
+                            <span class="badge bg-info">@Model.ProductName</span>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>Birim</span>
+                            <span class="badge bg-primary">@Model.Unit</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mt-3">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-tools me-2"></i>Hızlı İşlemler
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary">
+                            <i class="fas fa-edit me-2"></i>Tarif Düzenle
+                        </a>
+                        <a asp-controller="Products" asp-action="Details" asp-route-id="@Model.ProductId" class="btn btn-outline-info">
+                            <i class="fas fa-utensils me-2"></i>Ürün Detayı
+                        </a>
+                        <a asp-controller="Ingredients" asp-action="Index" class="btn btn-outline-success">
+                            <i class="fas fa-carrot me-2"></i>Malzemeler
+                        </a>
+                        <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-outline-danger">
+                            <i class="fas fa-trash me-2"></i>Tarifi Sil
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mt-3">
+                <div class="card-header bg-info text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-calculator me-2"></i>Maliyet Hesaplama
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="text-center">
+                        <i class="fas fa-calculator fa-2x text-info mb-2"></i>
+                        <p class="mb-0">Malzeme maliyeti hesaplanabilir</p>
+                        <button class="btn btn-outline-info btn-sm mt-2">
+                            <i class="fas fa-calculator me-2"></i>Hesapla
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 
+
+

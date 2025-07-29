@@ -18,80 +18,94 @@ namespace SD_Restaurant.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<RecipeDto>>> GetRecipes()
+        public async Task<ActionResult<ApiResponse<IEnumerable<RecipeDto>>>> GetRecipes()
         {
             var recipes = await _recipeService.GetAllRecipesAsync();
-            return Ok(recipes);
+            return Ok(ApiResponse<IEnumerable<RecipeDto>>.SuccessResult(recipes, "Reçeteler başarıyla getirildi"));
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<RecipeDto>> GetRecipe(int id)
+        public async Task<ActionResult<ApiResponse<RecipeDto>>> GetRecipe(int id)
         {
             var recipe = await _recipeService.GetRecipeByIdAsync(id);
             if (recipe == null)
-                return NotFound();
+                return NotFound(ApiResponse<RecipeDto>.ErrorResult("Reçete bulunamadı"));
 
-            return Ok(recipe);
+            return Ok(ApiResponse<RecipeDto>.SuccessResult(recipe, "Reçete başarıyla getirildi"));
         }
 
         [HttpGet("product/{productId}")]
-        public async Task<ActionResult<IEnumerable<RecipeDto>>> GetRecipesByProduct(int productId)
+        public async Task<ActionResult<ApiResponse<IEnumerable<RecipeDto>>>> GetRecipesByProduct(int productId)
         {
             var recipes = await _recipeService.GetRecipesByProductAsync(productId);
-            return Ok(recipes);
+            return Ok(ApiResponse<IEnumerable<RecipeDto>>.SuccessResult(recipes, "Ürün reçeteleri getirildi"));
         }
 
         [HttpGet("ingredient/{ingredientId}")]
-        public async Task<ActionResult<IEnumerable<RecipeDto>>> GetRecipesByIngredient(int ingredientId)
+        public async Task<ActionResult<ApiResponse<IEnumerable<RecipeDto>>>> GetRecipesByIngredient(int ingredientId)
         {
             var recipes = await _recipeService.GetRecipesByIngredientAsync(ingredientId);
-            return Ok(recipes);
-        }
-
-        [HttpGet("product/{productId}/ingredient/{ingredientId}")]
-        public async Task<ActionResult<RecipeDto>> GetRecipeByProductAndIngredient(int productId, int ingredientId)
-        {
-            var recipe = await _recipeService.GetRecipeByProductAndIngredientAsync(productId, ingredientId);
-            if (recipe == null)
-                return NotFound();
-
-            return Ok(recipe);
+            return Ok(ApiResponse<IEnumerable<RecipeDto>>.SuccessResult(recipes, "Malzeme reçeteleri getirildi"));
         }
 
         [HttpPost]
-        public async Task<ActionResult<RecipeDto>> CreateRecipe(CreateRecipeDto createRecipeDto)
+        public async Task<ActionResult<ApiResponse<RecipeDto>>> CreateRecipe(CreateRecipeDto createRecipeDto)
         {
-            var recipe = await _recipeService.CreateRecipeAsync(createRecipeDto);
-            return CreatedAtAction(nameof(GetRecipe), new { id = recipe.Id }, recipe);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ApiResponse<RecipeDto>.ErrorResult("Geçersiz veri", GetModelStateErrors()));
+            }
+
+            var createdRecipe = await _recipeService.CreateRecipeAsync(createRecipeDto);
+            return CreatedAtAction(nameof(GetRecipe), new { id = createdRecipe.Id }, 
+                ApiResponse<RecipeDto>.SuccessResult(createdRecipe, "Reçete başarıyla oluşturuldu"));
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateRecipe(int id, UpdateRecipeDto updateRecipeDto)
+        public async Task<ActionResult<ApiResponse<object>>> UpdateRecipe(int id, UpdateRecipeDto updateRecipeDto)
         {
             if (id != updateRecipeDto.Id)
             {
-                return BadRequest();
+                return BadRequest(ApiResponse<object>.ErrorResult("ID uyumsuzluğu"));
             }
 
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(ApiResponse<object>.ErrorResult("Geçersiz veri", GetModelStateErrors()));
             }
 
             var result = await _recipeService.UpdateRecipeAsync(updateRecipeDto);
             if (!result)
             {
-                return NotFound();
+                return NotFound(ApiResponse<object>.ErrorResult("Reçete bulunamadı"));
             }
 
-            return NoContent();
+            return Ok(ApiResponse<object>.SuccessResult(new object(), "Reçete başarıyla güncellendi"));
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteRecipe(int id)
+        public async Task<ActionResult<ApiResponse<object>>> DeleteRecipe(int id)
         {
-            await _recipeService.DeleteRecipeAsync(id);
-            return NoContent();
+            var result = await _recipeService.DeleteRecipeAsync(id);
+            if (!result)
+            {
+                return NotFound(ApiResponse<object>.ErrorResult("Reçete bulunamadı"));
+            }
+
+            return Ok(ApiResponse<object>.SuccessResult(new object(), "Reçete başarıyla silindi"));
+        }
+
+        private System.Collections.Generic.List<string> GetModelStateErrors()
+        {
+            var errors = new System.Collections.Generic.List<string>();
+            foreach (var modelState in ModelState.Values)
+            {
+                foreach (var error in modelState.Errors)
+                {
+                    errors.Add(error.ErrorMessage);
+                }
+            }
+            return errors;
         }
     }
 } 

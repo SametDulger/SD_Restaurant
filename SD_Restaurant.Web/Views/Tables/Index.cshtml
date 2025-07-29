@@ -1,56 +1,268 @@
-@model IEnumerable<SD_Restaurant.Web.Models.TableViewModel>
+﻿@model IEnumerable<SD_Restaurant.Web.Models.TableViewModel>
 
 @{
     ViewData["Title"] = "Masalar";
 }
 
-<div class="container-fluid">
-    <div class="row">
+<div class="container-fluid fade-in">
+    <div class="row mb-4">
         <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Masalar</h3>
-                    <div class="card-tools">
-                        <a asp-action="Create" class="btn btn-primary">
-                            <i class="fas fa-plus"></i> Yeni Masa
-                        </a>
-                    </div>
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="h3 mb-0 text-gradient">
+                        <i class="fas fa-chair me-2"></i>Masalar
+                    </h1>
+                    <p class="text-muted mb-0">Restoran masalarını yönetin ve takip edin</p>
                 </div>
-                <div class="card-body">
-                    <table class="table table-bordered table-striped">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Masa No</th>
-                                <th>Kapasite</th>
-                                <th>Durum</th>
-                                <th>Konum</th>
-                                <th>İşlemler</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var item in Model)
-                            {
-                                <tr>
-                                    <td>@item.Id</td>
-                                    <td>@item.TableNumber</td>
-                                    <td>@item.Capacity</td>
-                                    <td>@item.Status</td>
-                                    <td>@item.Location</td>
-                                    <td>
-                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-info">
-                                            <i class="fas fa-edit"></i> Düzenle
-                                        </a>
-                                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">
-                                            <i class="fas fa-trash"></i> Sil
-                                        </a>
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
+                <div class="d-flex gap-2">
+                    <a asp-action="Create" class="btn btn-primary btn-lg">
+                        <i class="fas fa-plus me-2"></i>Yeni Masa
+                    </a>
                 </div>
             </div>
         </div>
     </div>
-</div> 
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-hover">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="fas fa-list me-2"></i>Masa Listesi
+                        </h5>
+                        <div class="d-flex gap-2">
+                            <div class="input-group" style="width: 300px;">
+                                <span class="input-group-text">
+                                    <i class="fas fa-search"></i>
+                                </span>
+                                <input type="text" class="form-control table-search" placeholder="Masa ara...">
+                            </div>
+                            <div class="btn-group" role="group">
+                                <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" title="Tümü">
+                                    <i class="fas fa-list"></i>
+                                </button>
+                                <button type="button" class="btn btn-outline-success btn-sm" data-bs-toggle="tooltip" title="Boş">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                                <button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="tooltip" title="Dolu">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th width="80">ID</th>
+                                    <th>Masa No</th>
+                                    <th width="120">Kapasite</th>
+                                    <th width="120">Durum</th>
+                                    <th>Konum</th>
+                                    <th width="120">Müsaitlik</th>
+                                    <th width="200" class="text-end">İşlemler</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr class="slide-in">
+                                        <td>
+                                            <span class="badge bg-secondary">#@item.Id</span>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <i class="fas fa-chair me-2 text-primary"></i>
+                                                <strong>@item.TableNumber</strong>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-info">
+                                                <i class="fas fa-users me-1"></i>@item.Capacity kişi
+                                            </span>
+                                        </td>
+                                        <td>
+                                            @{
+                                                var statusClass = item.Status switch
+                                                {
+                                                    "Available" => "badge-success",
+                                                    "Occupied" => "badge-danger",
+                                                    "Reserved" => "badge-warning",
+                                                    "Maintenance" => "badge-secondary",
+                                                    _ => "badge-secondary"
+                                                };
+                                                var statusText = item.Status switch
+                                                {
+                                                    "Available" => "Boş",
+                                                    "Occupied" => "Dolu",
+                                                    "Reserved" => "Rezerve",
+                                                    "Maintenance" => "Bakım",
+                                                    _ => item.Status
+                                                };
+                                            }
+                                            <span class="badge @statusClass">@statusText</span>
+                                        </td>
+                                        <td>
+                                            <span class="text-muted">
+                                                <i class="fas fa-map-marker-alt me-1"></i>@item.Location
+                                            </span>
+                                        </td>
+                                        <td>
+                                            @if (item.IsAvailable)
+                                            {
+                                                <span class="badge bg-success">
+                                                    <i class="fas fa-check me-1"></i>Müsait
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-danger">
+                                                    <i class="fas fa-times me-1"></i>Müsait Değil
+                                                </span>
+                                            }
+                                        </td>
+                                        <td class="text-end">
+                                            <div class="btn-group btn-group-sm" role="group">
+                                                <a asp-action="Details" asp-route-id="@item.Id" 
+                                                   class="btn btn-outline-info" data-bs-toggle="tooltip" title="Detaylar">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                                <a asp-action="Edit" asp-route-id="@item.Id" 
+                                                   class="btn btn-outline-warning" data-bs-toggle="tooltip" title="Düzenle">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <a asp-action="Delete" asp-route-id="@item.Id" 
+                                                   class="btn btn-outline-danger" data-bs-toggle="tooltip" title="Sil">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                @if (!Model.Any())
+                {
+                    <div class="card-body text-center py-5">
+                        <i class="fas fa-chair fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">Henüz masa bulunmuyor</h5>
+                        <p class="text-muted">İlk masayı eklemek için aşağıdaki butona tıklayın.</p>
+                        <a asp-action="Create" class="btn btn-primary">
+                            <i class="fas fa-plus me-2"></i>İlk Masayı Ekle
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row mt-4">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h6 class="card-title">Toplam Masa</h6>
+                            <h3 class="mb-0">@Model.Count()</h3>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-chair fa-2x opacity-75"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h6 class="card-title">Boş Masalar</h6>
+                            <h3 class="mb-0">@Model.Count(m => m.Status == "Available")</h3>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-check-circle fa-2x opacity-75"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-danger text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h6 class="card-title">Dolu Masalar</h6>
+                            <h3 class="mb-0">@Model.Count(m => m.Status == "Occupied")</h3>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-times-circle fa-2x opacity-75"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h6 class="card-title">Rezerve</h6>
+                            <h3 class="mb-0">@Model.Count(m => m.Status == "Reserved")</h3>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-calendar-check fa-2x opacity-75"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Initialize tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+
+        // Table search functionality
+        document.querySelector('.table-search').addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const rows = document.querySelectorAll('.table tbody tr');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchTerm) ? '' : 'none';
+            });
+        });
+
+        // Status filter buttons
+        document.querySelectorAll('.btn-group .btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const status = this.getAttribute('data-status');
+                const rows = document.querySelectorAll('.table tbody tr');
+                
+                rows.forEach(row => {
+                    if (!status || status === 'all') {
+                        row.style.display = '';
+                    } else {
+                        const statusCell = row.querySelector('td:nth-child(4)');
+                        const statusText = statusCell.textContent.toLowerCase();
+                        row.style.display = statusText.includes(status) ? '' : 'none';
+                    }
+                });
+            });
+        });
+    </script>
+} 
+
+

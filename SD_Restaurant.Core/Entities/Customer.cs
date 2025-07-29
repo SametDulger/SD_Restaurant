@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using SD_Restaurant.Core.Enums;
 
 namespace SD_Restaurant.Core.Entities
 {
@@ -22,7 +23,7 @@ namespace SD_Restaurant.Core.Entities
         [MaxLength(200)]
         public string? Address { get; set; }
         
-        public string? CustomerType { get; set; } // Bireysel, Kurumsal
+        public CustomerType CustomerType { get; set; } = CustomerType.Regular;
         
         public decimal TotalSpent { get; set; }
         public int VisitCount { get; set; }

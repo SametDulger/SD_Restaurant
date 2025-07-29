@@ -18,42 +18,42 @@ namespace SD_Restaurant.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<StockDto>>> GetStocks()
+        public async Task<ActionResult<ApiResponse<IEnumerable<StockDto>>>> GetStocks()
         {
             var stocks = await _stockService.GetAllStocksAsync();
-            return Ok(stocks);
+            return Ok(ApiResponse<IEnumerable<StockDto>>.SuccessResult(stocks, "Stoklar başarıyla getirildi"));
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<StockDto>> GetStock(int id)
+        public async Task<ActionResult<ApiResponse<StockDto>>> GetStock(int id)
         {
             var stock = await _stockService.GetStockByIdAsync(id);
             if (stock == null)
             {
-                return NotFound();
+                return NotFound(ApiResponse<StockDto>.ErrorResult("Stok bulunamadı"));
             }
-            return Ok(stock);
+            return Ok(ApiResponse<StockDto>.SuccessResult(stock, "Stok başarıyla getirildi"));
         }
 
         [HttpGet("location/{location}")]
-        public async Task<ActionResult<IEnumerable<StockDto>>> GetStocksByLocation(string location)
+        public async Task<ActionResult<ApiResponse<IEnumerable<StockDto>>>> GetStocksByLocation(string location)
         {
             var stocks = await _stockService.GetStocksByLocationAsync(location);
-            return Ok(stocks);
+            return Ok(ApiResponse<IEnumerable<StockDto>>.SuccessResult(stocks, "Konum bazlı stoklar getirildi"));
         }
 
         [HttpGet("product/{productId}")]
-        public async Task<ActionResult<IEnumerable<StockDto>>> GetStocksByProduct(int productId)
+        public async Task<ActionResult<ApiResponse<IEnumerable<StockDto>>>> GetStocksByProduct(int productId)
         {
             var stocks = await _stockService.GetStocksByProductAsync(productId);
-            return Ok(stocks);
+            return Ok(ApiResponse<IEnumerable<StockDto>>.SuccessResult(stocks, "Ürün bazlı stoklar getirildi"));
         }
 
         [HttpGet("low-stock")]
-        public async Task<ActionResult<IEnumerable<StockDto>>> GetLowStockItems()
+        public async Task<ActionResult<ApiResponse<IEnumerable<StockDto>>>> GetLowStockItems()
         {
             var stocks = await _stockService.GetLowStockItemsAsync();
-            return Ok(stocks);
+            return Ok(ApiResponse<IEnumerable<StockDto>>.SuccessResult(stocks, "Düşük stok ürünleri getirildi"));
         }
 
         [HttpGet("check-availability")]
@@ -67,50 +67,50 @@ namespace SD_Restaurant.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<StockDto>> CreateStock(CreateStockDto createStockDto)
+        public async Task<ActionResult<ApiResponse<StockDto>>> CreateStock(CreateStockDto createStockDto)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(ApiResponse<StockDto>.ErrorResult("Geçersiz veri", GetModelStateErrors()));
             }
 
             var createdStock = await _stockService.CreateStockAsync(createStockDto);
-            return CreatedAtAction(nameof(GetStock), new { id = createdStock.Id }, createdStock);
+            return CreatedAtAction(nameof(GetStock), new { id = createdStock.Id }, 
+                ApiResponse<StockDto>.SuccessResult(createdStock, "Stok başarıyla oluşturuldu"));
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateStock(int id, UpdateStockDto updateStockDto)
+        public async Task<ActionResult<ApiResponse<object>>> UpdateStock(int id, UpdateStockDto updateStockDto)
         {
             if (id != updateStockDto.Id)
             {
-                return BadRequest();
+                return BadRequest(ApiResponse<object>.ErrorResult("ID uyumsuzluğu"));
             }
 
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(ApiResponse<object>.ErrorResult("Geçersiz veri", GetModelStateErrors()));
             }
 
             var result = await _stockService.UpdateStockAsync(updateStockDto);
             if (!result)
             {
-                return NotFound();
+                return NotFound(ApiResponse<object>.ErrorResult("Stok bulunamadı"));
             }
 
-            return NoContent();
+            return Ok(ApiResponse<object>.SuccessResult(new object(), "Stok başarıyla güncellendi"));
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteStock(int id)
+        public async Task<ActionResult<ApiResponse<object>>> DeleteStock(int id)
         {
-            var stock = await _stockService.GetStockByIdAsync(id);
-            if (stock == null)
+            var result = await _stockService.DeleteStockAsync(id);
+            if (!result)
             {
-                return NotFound();
+                return NotFound(ApiResponse<object>.ErrorResult("Stok bulunamadı"));
             }
 
-            await _stockService.DeleteStockAsync(id);
-            return NoContent();
+            return Ok(ApiResponse<object>.SuccessResult(new object(), "Stok başarıyla silindi"));
         }
 
         [HttpPut("update-quantity")]
@@ -121,6 +121,19 @@ namespace SD_Restaurant.API.Controllers
         {
             await _stockService.UpdateStockQuantityAsync(productId, location, quantity);
             return NoContent();
+        }
+
+        private List<string> GetModelStateErrors()
+        {
+            var errors = new List<string>();
+            foreach (var modelState in ModelState.Values)
+            {
+                foreach (var error in modelState.Errors)
+                {
+                    errors.Add(error.ErrorMessage);
+                }
+            }
+            return errors;
         }
     }
 } 

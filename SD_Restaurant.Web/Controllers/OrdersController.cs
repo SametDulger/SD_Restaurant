@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using SD_Restaurant.Web.Models;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -19,15 +20,15 @@ namespace SD_Restaurant.Web.Controllers
         public async Task<IActionResult> Index()
         {
             var httpClient = _httpClientFactory.CreateClient("ApiClient");
-            var response = await httpClient.GetAsync("api/orders");
+            var response = await httpClient.GetAsync("orders");
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                var orders = JsonSerializer.Deserialize<List<OrderViewModel>>(content, new JsonSerializerOptions
+                var apiResponse = JsonSerializer.Deserialize<ApiResponse<List<OrderViewModel>>>(content, new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
                 });
-                return View(orders);
+                return View(apiResponse?.Data ?? new List<OrderViewModel>());
             }
             return View(new List<OrderViewModel>());
         }
@@ -35,16 +36,16 @@ namespace SD_Restaurant.Web.Controllers
         public async Task<IActionResult> ByStatus(string status)
         {
             var httpClient = _httpClientFactory.CreateClient("ApiClient");
-            var response = await httpClient.GetAsync($"api/orders/status/{Uri.EscapeDataString(status)}");
+            var response = await httpClient.GetAsync($"orders/status/{Uri.EscapeDataString(status)}");
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                var orders = JsonSerializer.Deserialize<List<OrderViewModel>>(content, new JsonSerializerOptions
+                var apiResponse = JsonSerializer.Deserialize<ApiResponse<List<OrderViewModel>>>(content, new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
                 });
                 ViewBag.Status = status;
-                return View("Index", orders);
+                return View("Index", apiResponse?.Data ?? new List<OrderViewModel>());
             }
             return View("Index", new List<OrderViewModel>());
         }
@@ -52,16 +53,16 @@ namespace SD_Restaurant.Web.Controllers
         public async Task<IActionResult> ByTable(int tableId)
         {
             var httpClient = _httpClientFactory.CreateClient("ApiClient");
-            var response = await httpClient.GetAsync($"api/orders/table/{tableId}");
+            var response = await httpClient.GetAsync($"orders/table/{tableId}");
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                var orders = JsonSerializer.Deserialize<List<OrderViewModel>>(content, new JsonSerializerOptions
+                var apiResponse = JsonSerializer.Deserialize<ApiResponse<List<OrderViewModel>>>(content, new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
                 });
                 ViewBag.TableId = tableId;
-                return View("Index", orders);
+                return View("Index", apiResponse?.Data ?? new List<OrderViewModel>());
             }
             return View("Index", new List<OrderViewModel>());
         }
@@ -69,17 +70,17 @@ namespace SD_Restaurant.Web.Controllers
         public async Task<IActionResult> ByDateRange(DateTime startDate, DateTime endDate)
         {
             var httpClient = _httpClientFactory.CreateClient("ApiClient");
-            var response = await httpClient.GetAsync($"api/orders/date-range?startDate={startDate:yyyy-MM-dd}&endDate={endDate:yyyy-MM-dd}");
+            var response = await httpClient.GetAsync($"orders/date-range?startDate={startDate:yyyy-MM-dd}&endDate={endDate:yyyy-MM-dd}");
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                var orders = JsonSerializer.Deserialize<List<OrderViewModel>>(content, new JsonSerializerOptions
+                var apiResponse = JsonSerializer.Deserialize<ApiResponse<List<OrderViewModel>>>(content, new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
                 });
                 ViewBag.StartDate = startDate;
                 ViewBag.EndDate = endDate;
-                return View("Index", orders);
+                return View("Index", apiResponse?.Data ?? new List<OrderViewModel>());
             }
             return View("Index", new List<OrderViewModel>());
         }
@@ -97,7 +98,7 @@ namespace SD_Restaurant.Web.Controllers
                 var httpClient = _httpClientFactory.CreateClient("ApiClient");
                 var json = JsonSerializer.Serialize(order);
                 var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-                var response = await httpClient.PostAsync("api/orders", content);
+                var response = await httpClient.PostAsync("orders", content);
                 
                 if (response.IsSuccessStatusCode)
                 {
@@ -110,15 +111,15 @@ namespace SD_Restaurant.Web.Controllers
         public async Task<IActionResult> Edit(int id)
         {
             var httpClient = _httpClientFactory.CreateClient("ApiClient");
-            var response = await httpClient.GetAsync($"api/orders/{id}");
+            var response = await httpClient.GetAsync($"orders/{id}");
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                var order = JsonSerializer.Deserialize<OrderViewModel>(content, new JsonSerializerOptions
+                var apiResponse = JsonSerializer.Deserialize<ApiResponse<OrderViewModel>>(content, new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
                 });
-                return View(order);
+                return View(apiResponse?.Data);
             }
             return NotFound();
         }
@@ -131,7 +132,7 @@ namespace SD_Restaurant.Web.Controllers
                 var httpClient = _httpClientFactory.CreateClient("ApiClient");
                 var json = JsonSerializer.Serialize(order);
                 var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-                var response = await httpClient.PutAsync($"api/orders/{id}", content);
+                var response = await httpClient.PutAsync($"orders/{id}", content);
                 if (response.IsSuccessStatusCode)
                 {
                     return RedirectToAction(nameof(Index));
@@ -143,15 +144,15 @@ namespace SD_Restaurant.Web.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             var httpClient = _httpClientFactory.CreateClient("ApiClient");
-            var response = await httpClient.GetAsync($"api/orders/{id}");
+            var response = await httpClient.GetAsync($"orders/{id}");
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                var order = JsonSerializer.Deserialize<OrderViewModel>(content, new JsonSerializerOptions
+                var apiResponse = JsonSerializer.Deserialize<ApiResponse<OrderViewModel>>(content, new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
                 });
-                return View(order);
+                return View(apiResponse?.Data);
             }
             return NotFound();
         }
@@ -160,7 +161,7 @@ namespace SD_Restaurant.Web.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var httpClient = _httpClientFactory.CreateClient("ApiClient");
-            var response = await httpClient.DeleteAsync($"api/orders/{id}");
+            var response = await httpClient.DeleteAsync($"orders/{id}");
             if (response.IsSuccessStatusCode)
             {
                 return RedirectToAction(nameof(Index));
@@ -171,15 +172,15 @@ namespace SD_Restaurant.Web.Controllers
         public async Task<IActionResult> Details(int id)
         {
             var httpClient = _httpClientFactory.CreateClient("ApiClient");
-            var response = await httpClient.GetAsync($"api/orders/{id}");
+            var response = await httpClient.GetAsync($"orders/{id}");
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                var order = JsonSerializer.Deserialize<OrderViewModel>(content, new JsonSerializerOptions
+                var apiResponse = JsonSerializer.Deserialize<ApiResponse<OrderViewModel>>(content, new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
                 });
-                return View(order);
+                return View(apiResponse?.Data);
             }
             return NotFound();
         }
@@ -188,7 +189,7 @@ namespace SD_Restaurant.Web.Controllers
         public async Task<IActionResult> Process(int id)
         {
             var httpClient = _httpClientFactory.CreateClient("ApiClient");
-            var response = await httpClient.PostAsync($"api/orders/{id}/process", null);
+            var response = await httpClient.PostAsync($"orders/{id}/process", null);
             if (response.IsSuccessStatusCode)
             {
                 TempData["Message"] = "Sipariş başarıyla işlendi.";
@@ -203,7 +204,7 @@ namespace SD_Restaurant.Web.Controllers
         public async Task<IActionResult> Total(int id)
         {
             var httpClient = _httpClientFactory.CreateClient("ApiClient");
-            var response = await httpClient.GetAsync($"api/orders/{id}/total");
+            var response = await httpClient.GetAsync($"orders/{id}/total");
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();

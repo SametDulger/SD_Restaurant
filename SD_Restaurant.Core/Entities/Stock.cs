@@ -4,8 +4,11 @@ namespace SD_Restaurant.Core.Entities
 {
     public class Stock : BaseEntity
     {
-        public int ProductId { get; set; }
+        public int? ProductId { get; set; }
         public virtual Product? Product { get; set; }
+        
+        public int? IngredientId { get; set; }
+        public virtual Ingredient? Ingredient { get; set; }
         
         [Required]
         public decimal Quantity { get; set; }

@@ -1,452 +1,247 @@
 # 🍽️ SD Restaurant Management System
 
-Modern restaurant, cafe ve bar işletmelerinin günlük operasyonlarını dijitalleştirmek için geliştirilmiş kapsamlı bir yönetim sistemidir. Bu proje, .NET 9.0 teknolojisi kullanılarak Clean Architecture prensiplerine uygun olarak tasarlanmıştır.
+> **⚠️ Proje Durumu: Eğitim Amaçlı**
+> 
+> Bu proje, modern restaurant yönetim sistemlerinin nasıl tasarlanacağını göstermek amacıyla geliştirilmiş **eğitim amaçlı bir uygulamadır**. 
+> 
+> **Önemli Notlar:**
+> - 📚 **Eğitim ve öğrenme amaçlı** tasarlanmıştır
+> - 🚧 Production ortamında kullanım için **hazır değildir**
+> - 🔒 **Güvenlik önlemleri** alınması zorunludur
+> - 🛡️ [SECURITY.md](./SECURITY.md) dosyasını mutlaka okuyun
+> - ⚠️ Production kullanımı için ek test ve güvenlik önlemleri gereklidir
 
-## 🚨 **ÖNEMLİ NOT**
+Modern restaurant, cafe ve bar işletmelerinin günlük operasyonlarını dijitalleştirmek için geliştirilmiş kapsamlı bir yönetim sistemidir.
 
-Bu proje **aktif geliştirme aşamasındadır** ve henüz production ortamı için hazır değildir. Aşağıdaki durumlar göz önünde bulundurulmalıdır:
+## 🚀 **Hızlı Başlangıç**
 
-- ⚠️ **Geliştirme Aşaması**: Proje sürekli geliştirilmekte ve yeni özellikler eklenmektedir
-- 🔧 **Eksik Özellikler**: Bazı modüller henüz tamamlanmamış olabilir
-- 🐛 **Potansiyel Hatalar**: Geliştirme sürecinde hatalar bulunabilir
-- 📊 **Test Eksikliği**: Kapsamlı test coverage henüz tamamlanmamıştır
-- 🔒 **Güvenlik**: Production ortamı için ek güvenlik önlemleri gerekebilir
+### **Gereksinimler**
+- .NET 9.0 SDK
+- SQL Server
+- Visual Studio 2022 veya VS Code
+
+### **Kurulum**
+```bash
+# Projeyi klonlayın
+git clone https://github.com/SametDulger/SD_Restaurant.git
+cd SD_Restaurant
+
+# Bağımlılıkları yükleyin
+dotnet restore
+
+# Konfigürasyon dosyalarını oluşturun
+cp appsettings.Example.json SD_Restaurant.Web/appsettings.json
+cp SD_Restaurant.API/appsettings.Example.json SD_Restaurant.API/appsettings.json
+
+# Veritabanını oluşturun
+cd SD_Restaurant.API
+dotnet ef database update
+
+# API'yi çalıştırın
+dotnet run
+
+# Web UI'ı çalıştırın (yeni terminal)
+cd ../SD_Restaurant.Web
+dotnet run
+
+# Not: Web UI http://localhost:5000 adresinde çalışacak
+# API http://localhost:5195 adresinde çalışacak
+```
+
+### **🔒 Güvenlik Konfigürasyonu**
+Production kullanımı için aşağıdaki güvenlik önlemlerini mutlaka alın:
+
+#### **⚠️ Kritik Güvenlik Önlemleri**
+1. **JWT Secret Key değiştirin** - Tüm appsettings dosyalarında
+2. **Veritabanı şifrelerini güçlendirin** - Docker ve connection string'lerde
+3. **Environment variables kullanın** - Hassas bilgileri kod içinde saklamayın
+4. **HTTPS kullanın** - Production'da mutlaka SSL sertifikası ekleyin
+5. **CORS ayarlarını güncelleyin** - Gateway'deki AllowAll politikasını değiştirin
+6. **Swagger'ı kapatın** - Production'da Swagger UI'ı devre dışı bırakın
+7. **Default şifreleri değiştirin** - Docker'daki admin/admin123 şifrelerini güncelleyin
+
+### **Erişim Adresleri**
+- **Web UI**: http://localhost:5000
+- **API**: http://localhost:5195
+- **Swagger**: http://localhost:5195/swagger
+- **Health Check**: http://localhost:5195/health
 
 ## 🏗️ **Proje Mimarisi**
 
-Proje, SOLID prensiplerine ve Clean Architecture pattern'ine uygun olarak 5 katmanlı mimari kullanır:
-
-### 📁 **Katmanlar**
-
-| Katman | Proje | Açıklama |
-|--------|-------|----------|
-| **Domain** | `SD_Restaurant.Core` | Entities, interfaces, domain logic |
-| **Application** | `SD_Restaurant.Application` | Business services, DTOs, validators |
-| **Infrastructure** | `SD_Restaurant.Infrastructure` | Data access, repositories, external services |
-| **Presentation** | `SD_Restaurant.API` | Web API controllers, middleware |
-| **Web UI** | `SD_Restaurant.Web` | MVC web interface |
-
-### 🔄 **Veri Akışı**
 ```
-Web UI → API → Application → Infrastructure → Database
-API → Application → Infrastructure → Database
+SD_Restaurant.Core          # Entities, interfaces
+SD_Restaurant.Application   # Business services, DTOs
+SD_Restaurant.Infrastructure # Data access, repositories
+SD_Restaurant.API          # Web API controllers
+SD_Restaurant.Web          # MVC web interface
+SD_Restaurant.Gateway      # API Gateway (Ocelot)
+SD_Restaurant.Tests        # Unit & Integration tests
 ```
 
-## 🚀 **Özellikler**
+## ✨ **Özellikler**
 
-### 📦 **Ürün Yönetimi**
-- ✅ Ürün CRUD operasyonları
-- ✅ Kategori bazlı gruplandırma
-- ✅ Reçete tanımlama ve maliyet hesaplama
-- ✅ Ürün arama ve filtreleme
-- ✅ Fiyat yönetimi
+### 📦 **Temel Modüller**
+- **Ürün Yönetimi** - Kategoriler, fiyatlar, reçeteler
+- **Stok Yönetimi** - Gerçek zamanlı takip, uyarılar
+- **Sipariş Yönetimi** - Masa bazlı, durum takibi
+- **Masa Yönetimi** - Durum, kapasite, rezervasyon
+- **Müşteri Yönetimi** - Profil, geçmiş, analiz
+- **Personel Yönetimi** - Bilgiler, performans
+- **Rezervasyon Sistemi** - Tarih/saat bazlı
+- **Ödeme Yönetimi** - Çoklu yöntem, raporlar
 
-### 📊 **Stok Yönetimi**
-- ✅ Gerçek zamanlı stok takibi
-- ✅ Minimum stok uyarıları
-- ✅ Lokasyon bazlı stok yönetimi
-- ✅ Stok maliyet hesaplama
-- 🔄 Stok hareket geçmişi (geliştirme aşamasında)
-
-### 🍽️ **Sipariş Yönetimi**
-- ✅ Masa bazlı sipariş alma
-- ✅ Sipariş durumu takibi (Beklemede, Hazırlanıyor, Hazır, Teslim Edildi)
-- 🔄 Otomatik fiyat hesaplama (KDV, indirim - geliştirme aşamasında)
-- ✅ Özel talimatlar ve notlar
-- ✅ Sipariş geçmişi
-
-### 🏠 **Masa Yönetimi**
-- ✅ Masa durumu takibi (Boş, Dolu, Rezerve, Temizlik)
-- ✅ Kapasite yönetimi
-- ✅ Lokasyon bazlı gruplandırma
-- 🔄 Masa rezervasyon sistemi (geliştirme aşamasında)
-
-### 👥 **Müşteri Yönetimi**
-- ✅ Müşteri bilgileri kaydetme
-- ✅ Müşteri arama ve filtreleme
-- ✅ Müşteri tipi (Bireysel, Kurumsal)
-- ✅ Ziyaret sayısı ve toplam harcama takibi
-- 🔄 Müşteri geçmişi (geliştirme aşamasında)
-
-### 👨‍💼 **Personel Yönetimi**
-- ✅ Personel bilgileri kaydetme
-- ✅ Pozisyon ve departman bazlı gruplandırma
-- ✅ Personel arama ve filtreleme
-- 🔄 Personel performans takibi (geliştirme aşamasında)
-
-### 📅 **Rezervasyon Yönetimi**
-- ✅ Tarih ve saat bazlı rezervasyon
-- ✅ Masa kapasitesi kontrolü
-- ✅ Rezervasyon durumu takibi
-- ✅ Özel istekler kaydetme
-- 🔄 Rezervasyon onaylama/iptal (geliştirme aşamasında)
-
-### 💳 **Ödeme Yönetimi**
-- ✅ Çoklu ödeme yöntemi (Nakit, Kredi Kartı, Online)
-- ✅ Ödeme durumu takibi
-- ✅ Tarih bazlı ödeme raporları
-- 🔄 Fatura oluşturma (geliştirme aşamasında)
+### 🚀 **Enterprise Özellikler**
+- **Redis Caching** - Performans optimizasyonu
+- **RabbitMQ** - Message queue
+- **Prometheus + Grafana** - Monitoring
+- **API Gateway** - Ocelot ile yönetim
+- **Docker Support** - Containerization
+- **Health Checks** - Sistem durumu
 
 ## 🛠️ **Teknoloji Stack**
 
 ### **Backend**
-- **.NET 9.0** - Modern .NET platformu
-- **Entity Framework Core** - ORM framework
-- **SQL Server** - Veritabanı (SQLite'dan geçiş yapıldı)
-- **AutoMapper** - Object mapping
-- **FluentValidation** - Input validation
-- **Serilog** - Structured logging
+- .NET 9.0, Entity Framework Core, SQL Server
+- AutoMapper, FluentValidation, Serilog
+- JWT Authentication, Role-based Authorization
 
 ### **Frontend**
-- **ASP.NET Core MVC** - Web interface
-- **Bootstrap 5** - CSS framework
-- **jQuery** - JavaScript library
-- **Font Awesome** - Icon library
+- ASP.NET Core MVC, Bootstrap 5
+- Modern UI/UX, Responsive Design
+- Interactive JavaScript, Real-time Updates
 
 ### **API & Documentation**
-- **ASP.NET Core Web API** - RESTful API
-- **Swagger/OpenAPI** - API documentation
-- **Health Checks** - System monitoring
+- RESTful API, Swagger/OpenAPI
+- Comprehensive Endpoints, Health Checks
 
-## 📋 **Sistem Gereksinimleri**
-
-### **Geliştirme Ortamı**
-- .NET 9.0 SDK
-- Visual Studio 2022 veya VS Code
-- SQL Server Express (MSI\SQLEXPRESS)
-- Git
-
-### **Production Ortamı**
-- .NET 9.0 Runtime
-- SQL Server (Standard/Enterprise)
-- IIS veya Kestrel
-- Windows Server 2019+
-
-## 🚀 **Kurulum ve Çalıştırma**
-
-### **1. Projeyi Klonlayın**
-```bash
-git clone https://github.com/SametDulger/SD_Restaurant.git
-cd SD_Restaurant
-```
-
-### **2. Bağımlılıkları Yükleyin**
-```bash
-dotnet restore SD_Restaurant.sln
-```
-
-### **3. Veritabanını Hazırlayın**
-```bash
-# SQL Server'ın çalıştığından emin olun
-# Veritabanı otomatik oluşturulacaktır
-```
-
-### **4. API'yi Çalıştırın**
-```bash
-dotnet run --project SD_Restaurant.API
-```
-
-### **5. Web UI'ı Çalıştırın**
-```bash
-dotnet run --project SD_Restaurant.Web
-```
-
-### **6. Erişim Adresleri**
-- **API**: http://localhost:5195
-- **Swagger**: http://localhost:5195/swagger
-- **Health Check**: http://localhost:5195/health
-- **Web UI**: http://localhost:5224
-
-## 📚 **API Endpoints**
-
-### **Ürünler** `/api/products`
-- `GET` - Tüm ürünleri listele
-- `GET /{id}` - Ürün detayı
-- `GET /category/{categoryId}` - Kategoriye göre ürünler
-- `GET /search` - Ürün arama
-- `GET /low-stock` - Düşük stok ürünleri
-- `GET /{id}/cost` - Ürün maliyeti
-- `POST` - Yeni ürün ekle
-- `PUT /{id}` - Ürün güncelle
-- `DELETE /{id}` - Ürün sil
-
-### **Kategoriler** `/api/categories`
-- `GET` - Tüm kategorileri listele
-- `GET /{id}` - Kategori detayı
-- `POST` - Yeni kategori ekle
-- `PUT /{id}` - Kategori güncelle
-- `DELETE /{id}` - Kategori sil
-
-### **Siparişler** `/api/orders`
-- `GET` - Tüm siparişleri listele
-- `GET /{id}` - Sipariş detayı
-- `GET /table/{tableId}` - Masaya göre siparişler
-- `GET /status/{status}` - Duruma göre siparişler
-- `GET /date-range` - Tarih aralığına göre siparişler
-- `GET /{id}/total` - Sipariş toplam tutarı
-- `POST` - Yeni sipariş oluştur
-- `POST /{id}/process` - Sipariş işle
-- `PUT /{id}` - Sipariş güncelle
-- `DELETE /{id}` - Sipariş sil
-
-### **Stoklar** `/api/stocks`
-- `GET` - Tüm stokları listele
-- `GET /{id}` - Stok detayı
-- `GET /low-stock` - Düşük stok uyarıları
-- `GET /location/{location}` - Lokasyona göre stoklar
-- `GET /product/{productId}` - Ürüne göre stoklar
-- `GET /check-availability` - Stok müsaitlik kontrolü
-- `POST` - Yeni stok ekle
-- `PUT /{id}` - Stok güncelle
-- `PUT /update-quantity` - Stok miktarı güncelle
-- `DELETE /{id}` - Stok sil
-
-### **Masalar** `/api/tables`
-- `GET` - Tüm masaları listele
-- `GET /{id}` - Masa detayı
-- `GET /status/{status}` - Duruma göre masalar
-- `GET /location/{location}` - Lokasyona göre masalar
-- `POST` - Yeni masa ekle
-- `PUT /{id}` - Masa güncelle
-- `PUT /{id}/status` - Masa durumu güncelle
-- `DELETE /{id}` - Masa sil
-
-### **Müşteriler** `/api/customers`
-- `GET` - Tüm müşterileri listele
-- `GET /{id}` - Müşteri detayı
-- `GET /search` - Müşteri ara
-- `POST` - Yeni müşteri ekle
-- `PUT /{id}` - Müşteri güncelle
-- `DELETE /{id}` - Müşteri sil
-
-### **Personel** `/api/employees`
-- `GET` - Tüm personeli listele
-- `GET /{id}` - Personel detayı
-- `GET /position/{position}` - Pozisyona göre personel
-- `GET /department/{department}` - Departmana göre personel
-- `POST` - Yeni personel ekle
-- `PUT /{id}` - Personel güncelle
-- `DELETE /{id}` - Personel sil
-
-### **Rezervasyonlar** `/api/reservations`
-- `GET` - Tüm rezervasyonları listele
-- `GET /{id}` - Rezervasyon detayı
-- `GET /date/{date}` - Tarihe göre rezervasyonlar
-- `GET /table/{tableId}` - Masaya göre rezervasyonlar
-- `POST` - Yeni rezervasyon oluştur
-- `PUT /{id}` - Rezervasyon güncelle
-- `DELETE /{id}` - Rezervasyon sil
-
-### **Ödemeler** `/api/payments`
-- `GET` - Tüm ödemeleri listele
-- `GET /{id}` - Ödeme detayı
-- `GET /order/{orderId}` - Siparişe göre ödemeler
-- `GET /method/{paymentMethod}` - Ödeme yöntemine göre ödemeler
-- `GET /date-range` - Tarih aralığına göre ödemeler
-- `POST` - Yeni ödeme ekle
-- `PUT /{id}` - Ödeme güncelle
-- `DELETE /{id}` - Ödeme sil
-
-### **Reçeteler** `/api/recipes`
-- `GET` - Tüm reçeteleri listele
-- `GET /{id}` - Reçete detayı
-- `GET /product/{productId}` - Ürüne göre reçeteler
-- `GET /ingredient/{ingredientId}` - Malzemeye göre reçeteler
-- `GET /product/{productId}/ingredient/{ingredientId}` - Ürün ve malzemeye göre reçete
-- `POST` - Yeni reçete ekle
-- `PUT /{id}` - Reçete güncelle
-- `DELETE /{id}` - Reçete sil
-
-## 🗄️ **Veritabanı Şeması**
+## 📊 **Veritabanı Şeması**
 
 ### **Ana Varlıklar**
-- **Products** - Ürün bilgileri ve fiyatları (malzemeler de ürün olarak saklanır)
-- **Categories** - Ürün kategorileri
-- **Recipes** - Ürün reçeteleri ve malzemeleri (Product ↔ Product ilişkisi)
-- **Stocks** - Stok bilgileri ve lokasyonları
-- **Tables** - Masa bilgileri ve durumları
-- **Orders** - Sipariş ana bilgileri
-- **OrderItems** - Sipariş kalemleri
+- **Products** - Ürünler ve kategoriler
+- **Ingredients** - Malzemeler ve reçeteler
+- **Stocks** - Stok takibi ve lokasyonlar
+- **Tables** - Masa yönetimi
+- **Orders** - Siparişler ve kalemler
 - **Customers** - Müşteri bilgileri
-- **Employees** - Personel bilgileri
-- **Reservations** - Rezervasyon bilgileri
-- **Payments** - Ödeme bilgileri
-
-### **İlişkiler**
-- Ürün ↔ Kategori (Many-to-One)
-- Ürün ↔ Reçete (One-to-Many) - Ürünün malzemeleri
-- Malzeme ↔ Reçete (One-to-Many) - Malzeme olarak kullanılan ürünler
-- Ürün ↔ Stok (One-to-Many)
-- Ürün ↔ Sipariş Kalemi (One-to-Many)
-- Masa ↔ Sipariş (One-to-Many)
-- Müşteri ↔ Sipariş (One-to-Many)
-- Personel ↔ Sipariş (One-to-Many)
-- Sipariş ↔ Ödeme (One-to-Many)
-- Masa ↔ Rezervasyon (One-to-Many)
-- Müşteri ↔ Rezervasyon (One-to-Many)
+- **Employees** - Personel yönetimi
+- **Reservations** - Rezervasyon sistemi
+- **Payments** - Ödeme işlemleri
+- **Users & Roles** - Kullanıcı yönetimi
 
 ## 🔧 **Konfigürasyon**
 
-### **Veritabanı Bağlantısı**
+### **Connection String**
 ```json
 {
   "ConnectionStrings": {
-    "DefaultConnection": "Server=MSI\\SQLEXPRESS;Database=SD_Restaurant;Trusted_Connection=true;TrustServerCertificate=true;MultipleActiveResultSets=true"
+    "DefaultConnection": "Server=localhost;Database=SD_Restaurant_Dev;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=true"
   }
 }
 ```
 
-### **Logging Konfigürasyonu**
-```json
-{
-  "Serilog": {
-    "MinimumLevel": {
-      "Default": "Information",
-      "Override": {
-        "Microsoft": "Warning",
-        "System": "Warning"
-      }
-    },
-    "WriteTo": [
-      {
-        "Name": "Console"
-      },
-      {
-        "Name": "File",
-        "Args": {
-          "path": "Logs/log-.txt",
-          "rollingInterval": "Day",
-          "retainedFileCountLimit": 7
-        }
-      }
-    ]
-  }
-}
+### **Docker ile Çalıştırma**
+```bash
+# Tüm servisleri başlat
+docker-compose up -d
+
+# Sadece API ve Web
+docker-compose up -d api1 web1
+
+# Erişim Adresleri
+# Web UI: http://localhost:80 (Nginx Load Balancer)
+# API Gateway: http://localhost:5001
+# Grafana: http://localhost:3000 (admin/admin123)
+# Prometheus: http://localhost:9090
+# RabbitMQ Management: http://localhost:15672 (admin/admin123)
+
+# ⚠️ GÜVENLİK: Default şifreleri değiştirin!
+# - Grafana: admin/admin123
+# - RabbitMQ: admin/admin123
+# - SQL Server: sa/YourStrong@Passw0rd
 ```
 
-## 📊 **Örnek Kullanım Senaryoları**
+## 📚 **API Endpoints**
 
-### **1. Yeni Ürün Ekleme**
-```json
-POST /api/products
-{
-  "name": "Çilekli Kokteyl",
-  "description": "Taze çileklerle hazırlanmış özel kokteyl",
-  "price": 45.00,
-  "unit": "bardak",
-  "categoryId": 1,
-  "isRecipe": true
-}
-```
+### **Temel Endpoints**
+- `GET /api/products` - Ürün listesi
+- `GET /api/orders` - Sipariş listesi
+- `GET /api/tables` - Masa listesi
+- `GET /api/customers` - Müşteri listesi
+- `GET /api/stocks` - Stok durumu
 
-### **2. Sipariş Oluşturma**
-```json
-POST /api/orders
-{
-  "tableId": 1,
-  "customerId": 1,
-  "employeeId": 1,
-  "notes": "Acil sipariş",
-  "orderItems": [
-    {
-      "productId": 1,
-      "quantity": 2,
-      "specialInstructions": "Buzsuz"
-    }
-  ]
-}
-```
+### **Swagger UI**
+API'yi test etmek için: http://localhost:5195/swagger
 
-### **3. Stok Güncelleme**
-```json
-PUT /api/stocks/update-quantity
-{
-  "productId": 1,
-  "location": "Depo",
-  "quantity": 50
-}
-```
+### **Docker ile Erişim**
+Docker kullanıyorsanız:
+- **Web UI**: http://localhost:80 (Nginx Load Balancer)
+- **API Gateway**: http://localhost:5001
+- **Swagger**: http://localhost:5001/swagger
 
 ## 🧪 **Test ve Geliştirme**
 
-### **Swagger UI**
-API'yi test etmek için Swagger UI kullanın:
-```
-http://localhost:5195/swagger
-```
-
 ### **Health Check**
-Sistem durumunu kontrol edin:
 ```
 http://localhost:5195/health
 ```
 
 ### **Log Dosyaları**
-Uygulama logları şu konumda bulunur:
 ```
 SD_Restaurant.API/Logs/
 ```
 
-## 🔮 **Gelecek Özellikler**
-
-### **Planlanan Geliştirmeler**
-- 📱 **Mobil Uygulama** - iOS/Android native uygulamalar
-- 📊 **Raporlama Modülü** - Detaylı analiz ve raporlar
-- 🔔 **Bildirim Sistemi** - Email/SMS bildirimleri
-- 💳 **Online Ödeme** - Stripe/PayPal entegrasyonu
-- 📈 **Dashboard** - Gerçek zamanlı metrikler
-- 🔐 **Kullanıcı Yönetimi** - Role-based access control
-- 📱 **QR Kod Sistemi** - Masa QR kodları
-- 🍽️ **Menü Yönetimi** - Dinamik menü sistemi
-
-### **Teknik İyileştirmeler**
-- 🧪 **Unit Tests** - Kapsamlı test coverage
-- 🔒 **Authentication** - JWT token authentication
-- 🚀 **Performance** - Caching ve optimization
-- 📦 **Docker** - Containerization
-- ☁️ **Cloud Ready** - Azure/AWS deployment
-
 ## 🤝 **Katkıda Bulunma**
 
-Bu proje açık kaynak olarak geliştirilmektedir. Katkıda bulunmak için:
+1. Fork yapın
+2. Feature branch oluşturun
+3. Değişikliklerinizi commit edin
+4. Pull Request gönderin
 
-1. **Fork** yapın
-2. **Feature branch** oluşturun (`git checkout -b feature/AmazingFeature`)
-3. **Commit** yapın (`git commit -m 'Add some AmazingFeature'`)
-4. **Push** yapın (`git push origin feature/AmazingFeature`)
-5. **Pull Request** oluşturun
+## 📞 **İletişim**
 
-### **Geliştirme Kuralları**
-- Clean Code prensiplerine uyun
-- SOLID prensiplerini takip edin
-- Unit test yazın
-- Documentation güncelleyin
-- Code review sürecine katılın
-
-## 📞 **İletişim ve Destek**
-
-- **Issues**: GitHub Issues kullanarak hata bildirin
-- **Discussions**: GitHub Discussions'da soru sorun
-- **Email**: Proje sahibi ile iletişim için GitHub Issues kullanın
+- **Issues**: GitHub Issues
+- **Discussions**: GitHub Discussions
+- **Email**: GitHub üzerinden iletişim
 
 ## 📝 **Lisans**
 
-Bu proje MIT lisansı altında lisanslanmıştır. Detaylar için [LICENSE](LICENSE) dosyasına bakın.
-
-## 🔄 **Sürüm Geçmişi**
-
-### **v1.0.0** (Geliştirme Aşaması)
-- ✅ Temel CRUD operasyonları
-- ✅ Katmanlı mimari
-- ✅ SQL Server entegrasyonu
-- ✅ Swagger dokümantasyonu
-- ✅ AutoMapper entegrasyonu
-- ✅ FluentValidation
-- ✅ Serilog logging
-- ✅ Health checks
-- ✅ MVC Web interface
-- 🔄 Geliştirme devam ediyor...
+MIT License - Detaylar için [LICENSE](LICENSE) dosyasına bakın.
 
 ---
 
-**⚠️ Uyarı**: Bu proje geliştirme aşamasındadır. Production ortamında kullanmadan önce kapsamlı test yapılması önerilir. 
+**SD Restaurant Management System** - Modern restaurant yönetimi için geliştirilmiş kapsamlı çözüm.
+
+---
+
+## ⚠️ **Yasal Uyarı ve Sorumluluk Reddi**
+
+Bu proje **eğitim ve öğrenme amaçlı** geliştirilmiş bir örnek uygulamadır. Proje şu anda geliştirme aşamasındadır ve aşağıdaki durumlar söz konusudur:
+
+### **Proje Durumu**
+- 🚧 **Geliştirme Aşamasında**: Proje aktif olarak geliştirilmektedir
+- 🔄 **Sürekli Güncelleme**: Özellikler ve API'ler değişebilir
+- 🐛 **Potansiyel Hatalar**: Test edilmemiş özellikler bulunabilir
+- 📚 **Eğitim Amaçlı**: Production kullanımı için tasarlanmamıştır
+
+### **Kullanım Uyarıları**
+- ⚠️ **Production Kullanımı**: Bu projeyi production ortamında kullanmadan önce kapsamlı test yapın
+- 🔒 **Güvenlik**: Ek güvenlik önlemleri ve audit gerekebilir
+- 📊 **Performans**: Yüksek trafikli ortamlar için optimize edilmemiştir
+- 🛡️ **Veri Güvenliği**: Hassas veriler için ek şifreleme ve güvenlik katmanları ekleyin
+
+### **🔒 Güvenlik Uyarıları**
+- **Default Şifreler**: Docker'daki admin/admin123 şifrelerini mutlaka değiştirin
+- **JWT Anahtarları**: Tüm appsettings dosyalarındaki JWT secret key'leri güncelleyin
+- **CORS Politikaları**: Gateway'deki AllowAll CORS politikasını production için kısıtlayın
+- **Swagger UI**: Production'da Swagger'ı devre dışı bırakın
+- **Environment Variables**: Hassas bilgileri environment variable'lara taşıyın
+- **HTTPS**: Production'da mutlaka SSL sertifikası kullanın
+
+### **Katkıda Bulunma**
+Bu proje açık kaynak olarak geliştirilmektedir. Katkıda bulunurken:
+- Hata raporları için GitHub Issues kullanın
+- Öneriler için GitHub Discussions'ı tercih edin
+- Pull Request'lerde detaylı açıklama yapın
+
+**Not**: Bu projeyi kullanarak oluşabilecek herhangi bir zarardan proje geliştiricileri sorumlu değildir.
+

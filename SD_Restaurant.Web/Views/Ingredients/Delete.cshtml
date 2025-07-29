@@ -1,0 +1,211 @@
+﻿@model SD_Restaurant.Web.Models.IngredientViewModel
+
+@{
+    ViewData["Title"] = "Malzeme Sil";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 mb-0 text-dark">
+                <i class="fas fa-trash me-2"></i>Malzeme Sil
+            </h1>
+            <p class="text-muted">@Model.Name malzemesini silmek üzeresiniz</p>
+        </div>
+        <div>
+            <a asp-action="Index" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Geri Dön
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow-sm border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-exclamation-triangle me-2"></i>Silme Onayı
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-danger">
+                        <h6><i class="fas fa-exclamation-triangle me-2"></i>Dikkat!</h6>
+                        <p class="mb-0">
+                            Bu malzemeyi silmek istediğinizden emin misiniz? Bu işlem geri alınamaz ve 
+                            aşağıdaki sonuçlara yol açabilir:
+                        </p>
+                        <ul class="mb-0 mt-2">
+                            <li>Malzeme ile ilgili tüm reçeteler etkilenebilir</li>
+                            <li>Stok kayıtları silinebilir</li>
+                            <li>Bu malzeme kullanılan ürünler etkilenebilir</li>
+                        </ul>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <dl class="row">
+                                <dt class="col-sm-4 text-muted">Malzeme Adı:</dt>
+                                <dd class="col-sm-8">
+                                    <strong>@Model.Name</strong>
+                                </dd>
+
+                                <dt class="col-sm-4 text-muted">Birim:</dt>
+                                <dd class="col-sm-8">
+                                    <span class="badge bg-info">@Model.Unit</span>
+                                </dd>
+
+                                <dt class="col-sm-4 text-muted">Mevcut Stok:</dt>
+                                <dd class="col-sm-8">
+                                    <span class="badge bg-success">@Model.CurrentStock @Model.Unit</span>
+                                </dd>
+
+                                <dt class="col-sm-4 text-muted">Birim Maliyet:</dt>
+                                <dd class="col-sm-8">
+                                    <span class="badge bg-warning">@Model.Cost.ToString("C")</span>
+                                </dd>
+                            </dl>
+                        </div>
+                        <div class="col-md-6">
+                            <dl class="row">
+                                <dt class="col-sm-4 text-muted">Durum:</dt>
+                                <dd class="col-sm-8">
+                                    @if (Model.IsActive)
+                                    {
+                                        <span class="badge bg-success">Aktif</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">Pasif</span>
+                                    }
+                                </dd>
+
+                                @if (!string.IsNullOrEmpty(Model.StockLocation))
+                                {
+                                    <dt class="col-sm-4 text-muted">Stok Lokasyonu:</dt>
+                                    <dd class="col-sm-8">
+                                        <i class="fas fa-map-marker-alt me-1"></i>@Model.StockLocation
+                                    </dd>
+                                }
+
+                                <dt class="col-sm-4 text-muted">Oluşturulma:</dt>
+                                <dd class="col-sm-8">@Model.CreatedDate.ToString("dd/MM/yyyy HH:mm")</dd>
+
+                                @if (Model.UpdatedDate.HasValue)
+                                {
+                                    <dt class="col-sm-4 text-muted">Güncellenme:</dt>
+                                    <dd class="col-sm-8">@Model.UpdatedDate.Value.ToString("dd/MM/yyyy HH:mm")</dd>
+                                }
+                            </dl>
+                        </div>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(Model.Description))
+                    {
+                        <div class="mt-3">
+                            <h6 class="text-primary">ğŸ“ Açıklama</h6>
+                            <div class="bg-light p-3 rounded">
+                                @Model.Description
+                            </div>
+                        </div>
+                    }
+
+                    <form asp-action="Delete" method="post" class="mt-4">
+                        <input type="hidden" asp-for="Id" />
+                        <div class="d-flex justify-content-between">
+                            <a asp-action="Index" class="btn btn-outline-secondary">
+                                <i class="fas fa-times me-2"></i>İptal
+                            </a>
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-trash me-2"></i>Evet, Sil
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card shadow-sm border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-exclamation-triangle me-2"></i>Uyarı
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-danger">
+                        <h6><i class="fas fa-exclamation-triangle me-2"></i>Bu işlem geri alınamaz!</h6>
+                        <p class="mb-0">
+                            Malzemeyi silmeden önce aşağıdakileri kontrol edin:
+                        </p>
+                        <ul class="mb-0 mt-2">
+                            <li>Bu malzeme reçetelerde kullanılıyor mu?</li>
+                            <li>Stok kayıtları var mı?</li>
+                            <li>Bu malzeme aktif siparişlerde kullanılıyor mu?</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mt-3">
+                <div class="card-header bg-info text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-lightbulb me-2"></i>Alternatif
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info mb-0">
+                        <p class="mb-2">
+                            <strong>Öneri:</strong> Malzemeyi silmek yerine pasif hale getirmeyi düşünebilirsiniz.
+                        </p>
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-info btn-sm">
+                            <i class="fas fa-edit me-2"></i>Düzenle
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mt-3">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-chart-bar me-2"></i>Malzeme Özeti
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-3">
+                        <i class="fas fa-carrot fa-3x text-danger mb-2"></i>
+                        <h5>@Model.Name</h5>
+                        <p class="text-muted">@Model.Unit</p>
+                    </div>
+                    
+                    <div class="list-group list-group-flush">
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>Stok Durumu</span>
+                            <span class="badge bg-success">@Model.CurrentStock @Model.Unit</span>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>Birim Maliyet</span>
+                            <span class="badge bg-warning">@Model.Cost.ToString("C")</span>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>Toplam Değer</span>
+                            <span class="badge bg-primary">@((Model.Cost * Model.CurrentStock).ToString("C"))</span>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>Durum</span>
+                            @if (Model.IsActive)
+                            {
+                                <span class="badge bg-success">Aktif</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">Pasif</span>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 
+
+

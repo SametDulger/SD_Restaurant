@@ -4,21 +4,23 @@ namespace SD_Restaurant.Application.DTOs
 {
     public class CreateRecipeDto
     {
-        [Required]
+        [Required(ErrorMessage = "Ürün seçimi zorunludur")]
+        [Range(1, int.MaxValue, ErrorMessage = "Geçerli bir ürün seçilmelidir")]
         public int ProductId { get; set; }
         
-        [Required]
+        [Required(ErrorMessage = "Malzeme seçimi zorunludur")]
+        [Range(1, int.MaxValue, ErrorMessage = "Geçerli bir malzeme seçilmelidir")]
         public int IngredientId { get; set; }
         
-        [Required]
-        [Range(0.01, double.MaxValue, ErrorMessage = "Quantity must be greater than 0")]
+        [Required(ErrorMessage = "Miktar zorunludur")]
+        [Range(0.01, double.MaxValue, ErrorMessage = "Miktar 0'dan büyük olmalıdır")]
         public decimal Quantity { get; set; }
         
-        [Required]
-        [StringLength(20, ErrorMessage = "Unit cannot exceed 20 characters")]
+        [Required(ErrorMessage = "Birim zorunludur")]
+        [MaxLength(20, ErrorMessage = "Birim en fazla 20 karakter olabilir")]
         public string Unit { get; set; } = string.Empty;
         
-        [StringLength(200, ErrorMessage = "Instructions cannot exceed 200 characters")]
+        [MaxLength(200, ErrorMessage = "Talimatlar en fazla 200 karakter olabilir")]
         public string? Instructions { get; set; }
     }
 } 

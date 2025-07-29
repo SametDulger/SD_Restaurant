@@ -19,18 +19,11 @@ namespace SD_Restaurant.Infrastructure.Repositories
             return await _dbSet
                 .Include(p => p.Category)
                 .Where(p => p.CategoryId == categoryId && p.IsActive)
+                .AsNoTracking()
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Product>> GetProductsWithRecipesAsync()
-        {
-            return await _dbSet
-                .Include(p => p.Category)
-                .Include(p => p.Recipes)
-                .ThenInclude(r => r.Ingredient)
-                .Where(p => p.IsRecipe && p.IsActive)
-                .ToListAsync();
-        }
+
 
         public async Task<Product?> GetProductWithRecipesAsync(int productId)
         {
@@ -46,6 +39,7 @@ namespace SD_Restaurant.Infrastructure.Repositories
             return await _dbSet
                 .Include(p => p.Stocks)
                 .Where(p => p.IsActive && p.Stocks.Any(s => s.Quantity <= s.MinimumStock))
+                .AsNoTracking()
                 .ToListAsync();
         }
 
@@ -54,6 +48,7 @@ namespace SD_Restaurant.Infrastructure.Repositories
             return await _dbSet
                 .Include(p => p.Category)
                 .Where(p => p.IsActive && (p.Name.Contains(searchTerm) || (p.Description != null && p.Description.Contains(searchTerm))))
+                .AsNoTracking()
                 .ToListAsync();
         }
     }
