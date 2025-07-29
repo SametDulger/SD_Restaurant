@@ -1,49 +1,177 @@
-@model SD_Restaurant.Web.Models.TableViewModel
+﻿@model SD_Restaurant.Web.Models.TableViewModel
 
 @{
     ViewData["Title"] = "Yeni Masa";
 }
 
-<div class="container-fluid">
-    <div class="row">
+<div class="container-fluid fade-in">
+    <div class="row mb-4">
         <div class="col-12">
-            <div class="card">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="h3 mb-0 text-gradient">
+                        <i class="fas fa-plus me-2"></i>Yeni Masa Ekle
+                    </h1>
+                    <p class="text-muted mb-0">Restoran için yeni masa bilgilerini girin</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Geri Dön
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-xl-6">
+            <div class="card shadow-hover">
                 <div class="card-header">
-                    <h3 class="card-title">Yeni Masa Ekle</h3>
+                    <h5 class="mb-0">
+                        <i class="fas fa-chair me-2"></i>Masa Bilgileri
+                    </h5>
                 </div>
                 <div class="card-body">
-                    <form asp-action="Create">
-                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                        
-                        <div class="form-group">
-                            <label asp-for="TableNumber" class="control-label">Masa Numarası</label>
-                            <input asp-for="TableNumber" class="form-control" />
-                            <span asp-validation-for="TableNumber" class="text-danger"></span>
+                    <form asp-action="Create" id="createTableForm">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            Lütfen aşağıdaki hataları düzeltin:
                         </div>
                         
-                        <div class="form-group">
-                            <label asp-for="Capacity" class="control-label">Kapasite</label>
-                            <input asp-for="Capacity" class="form-control" />
-                            <span asp-validation-for="Capacity" class="text-danger"></span>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="TableNumber" class="form-label">
+                                        <i class="fas fa-hashtag me-1"></i>Masa Numarası
+                                    </label>
+                                    <input asp-for="TableNumber" class="form-control" 
+                                           placeholder="Örn: M1, M2, VIP1" 
+                                           data-bs-toggle="tooltip" 
+                                           title="Masa numarasını girin (örn: M1, M2, VIP1)">
+                                    <span asp-validation-for="TableNumber" class="invalid-feedback"></span>
+                                    <small class="form-text text-muted">
+                                        <i class="fas fa-info-circle me-1"></i>Benzersiz bir masa numarası girin
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="Capacity" class="form-label">
+                                        <i class="fas fa-users me-1"></i>Kapasite
+                                    </label>
+                                    <input asp-for="Capacity" class="form-control" 
+                                           type="number" min="1" max="20" 
+                                           placeholder="Kişi sayısı"
+                                           data-bs-toggle="tooltip" 
+                                           title="Masanın kaç kişilik olduğunu belirtin">
+                                    <span asp-validation-for="Capacity" class="invalid-feedback"></span>
+                                    <small class="form-text text-muted">
+                                        <i class="fas fa-info-circle me-1"></i>1-20 kişi arası
+                                    </small>
+                                </div>
+                            </div>
                         </div>
                         
-                        <div class="form-group">
-                            <label asp-for="Status" class="control-label">Durum</label>
-                            <input asp-for="Status" class="form-control" />
-                            <span asp-validation-for="Status" class="text-danger"></span>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="Status" class="form-label">
+                                        <i class="fas fa-info-circle me-1"></i>Durum
+                                    </label>
+                                    <select asp-for="Status" class="form-select" 
+                                            data-bs-toggle="tooltip" 
+                                            title="Masanın mevcut durumunu seçin">
+                                        <option value="">Durum Seçin</option>
+                                        <option value="Available">Boş</option>
+                                        <option value="Occupied">Dolu</option>
+                                        <option value="Reserved">Rezerve</option>
+                                        <option value="Maintenance">Bakım</option>
+                                    </select>
+                                    <span asp-validation-for="Status" class="invalid-feedback"></span>
+                                    <small class="form-text text-muted">
+                                        <i class="fas fa-info-circle me-1"></i>Masanın mevcut durumu
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="Location" class="form-label">
+                                        <i class="fas fa-map-marker-alt me-1"></i>Konum
+                                    </label>
+                                    <input asp-for="Location" class="form-control" 
+                                           placeholder="Örn: Bahçe, İç Mekan, VIP"
+                                           data-bs-toggle="tooltip" 
+                                           title="Masanın bulunduğu konumu belirtin">
+                                    <span asp-validation-for="Location" class="invalid-feedback"></span>
+                                    <small class="form-text text-muted">
+                                        <i class="fas fa-info-circle me-1"></i>Masanın bulunduğu alan
+                                    </small>
+                                </div>
+                            </div>
                         </div>
                         
-                        <div class="form-group">
-                            <label asp-for="Location" class="control-label">Konum</label>
-                            <input asp-for="Location" class="form-control" />
-                            <span asp-validation-for="Location" class="text-danger"></span>
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input asp-for="IsAvailable" class="form-check-input" type="checkbox" id="isAvailable">
+                                <label class="form-check-label" for="isAvailable">
+                                    <i class="fas fa-check-circle me-1"></i>Masa müsait
+                                </label>
+                                <small class="form-text text-muted d-block">
+                                    <i class="fas fa-info-circle me-1"></i>Bu seçenek işaretliyse masa rezervasyon için müsait
+                                </small>
+                            </div>
                         </div>
                         
-                        <div class="form-group">
-                            <input type="submit" value="Kaydet" class="btn btn-primary" />
-                            <a asp-action="Index" class="btn btn-secondary">Geri Dön</a>
+                        <hr class="my-4">
+                        
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="fas fa-save me-2"></i>Masayı Kaydet
+                                </button>
+                                <button type="reset" class="btn btn-outline-secondary ms-2">
+                                    <i class="fas fa-undo me-2"></i>Sıfırla
+                                </button>
+                            </div>
+                            <a asp-action="Index" class="btn btn-outline-secondary">
+                                <i class="fas fa-times me-2"></i>İptal
+                            </a>
                         </div>
                     </form>
+                </div>
+            </div>
+            
+            <!-- Help Card -->
+            <div class="card mt-4 border-info">
+                <div class="card-header bg-info text-white">
+                    <h6 class="mb-0">
+                        <i class="fas fa-question-circle me-2"></i>Yardım
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="text-info">
+                                <i class="fas fa-lightbulb me-1"></i>İpuçları:
+                            </h6>
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-check text-success me-2"></i>Masa numarası benzersiz olmalıdır</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Kapasite 1-20 kişi arası olmalıdır</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Konum bilgisi müşteriler için önemlidir</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-info">
+                                <i class="fas fa-cog me-1"></i>Durum Açıklamaları:
+                            </h6>
+                            <ul class="list-unstyled">
+                                <li><span class="badge bg-success me-2">Boş</span>Müşteri alabilir</li>
+                                <li><span class="badge bg-danger me-2">Dolu</span>Müşteri var</li>
+                                <li><span class="badge bg-warning me-2">Rezerve</span>Rezervasyon var</li>
+                                <li><span class="badge bg-secondary me-2">Bakım</span>Kullanılamaz</li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -52,4 +180,79 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        // Initialize tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+
+        // Form enhancement
+        document.getElementById('createTableForm').addEventListener('submit', function(e) {
+            const submitBtn = this.querySelector('button[type="submit"]');
+            SDRestaurant.showLoading(submitBtn);
+        });
+
+        // Real-time validation feedback
+        const formControls = document.querySelectorAll('.form-control, .form-select');
+        formControls.forEach(control => {
+            control.addEventListener('blur', function() {
+                validateField(this);
+            });
+            
+            control.addEventListener('input', function() {
+                if (this.classList.contains('is-invalid')) {
+                    validateField(this);
+                }
+            });
+        });
+
+        function validateField(field) {
+            const value = field.value.trim();
+            const isValid = value.length > 0;
+            
+            if (isValid) {
+                field.classList.remove('is-invalid');
+                field.classList.add('is-valid');
+            } else {
+                field.classList.remove('is-valid');
+                field.classList.add('is-invalid');
+            }
+        }
+
+        // Auto-save draft functionality
+        let autoSaveTimer;
+        const form = document.getElementById('createTableForm');
+        
+        form.addEventListener('input', function() {
+            clearTimeout(autoSaveTimer);
+            autoSaveTimer = setTimeout(() => {
+                const formData = new FormData(form);
+                const data = Object.fromEntries(formData);
+                localStorage.setItem('tableDraft', JSON.stringify(data));
+            }, 2000);
+        });
+
+        // Load draft on page load
+        window.addEventListener('load', function() {
+            const draft = localStorage.getItem('tableDraft');
+            if (draft) {
+                const data = JSON.parse(draft);
+                Object.keys(data).forEach(key => {
+                    const field = form.querySelector(`[name="${key}"]`);
+                    if (field) {
+                        field.value = data[key];
+                    }
+                });
+            }
+        });
+
+        // Clear draft on successful submission
+        form.addEventListener('submit', function() {
+            localStorage.removeItem('tableDraft');
+        });
+    </script>
 } 
+
+

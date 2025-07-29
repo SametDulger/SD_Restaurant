@@ -1,0 +1,161 @@
+@model SD_Restaurant.Web.Models.LoginViewModel
+
+@{
+    ViewData["Title"] = "Giriş Yap";
+}
+
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <!-- Test Kullanıcıları Kartı - Üstte -->
+            <div class="card mb-4 border-0 bg-warning bg-opacity-10">
+                <div class="card-header bg-warning text-dark text-center" style="cursor: pointer;" onclick="toggleTestUsers()">
+                    <h5 class="mb-0">
+                        <i class="fas fa-flask me-2"></i>Test Kullanıcıları - Geliştirme Modu
+                        <i class="fas fa-chevron-right ms-2" id="testUsersIcon"></i>
+                    </h5>
+                </div>
+                <div class="card-body" id="testUsersBody" style="display: none;">
+                    <div class="row">
+                        <div class="col-md-6 mb-2">
+                            <div class="d-flex align-items-center p-2 border rounded bg-light">
+                                <div class="flex-grow-1">
+                                    <code class="fs-6">admin / admin123</code>
+                                </div>
+                                <button type="button" class="btn btn-sm btn-outline-primary ms-2" 
+                                        onclick="fillCredentials('admin', 'admin123')">
+                                    <i class="fas fa-mouse-pointer"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6 mb-2">
+                            <div class="d-flex align-items-center p-2 border rounded bg-light">
+                                <div class="flex-grow-1">
+                                    <code class="fs-6">manager / manager123</code>
+                                </div>
+                                <button type="button" class="btn btn-sm btn-outline-success ms-2" 
+                                        onclick="fillCredentials('manager', 'manager123')">
+                                    <i class="fas fa-mouse-pointer"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-warning py-2 mb-0 mt-2">
+                        <small><i class="fas fa-exclamation-triangle me-1"></i>Test kullanıcıları - Production'da kullanmayın!</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Login Formu - Altta -->
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-primary text-white text-center">
+                    <h4 class="mb-0">
+                        <i class="fas fa-sign-in-alt me-2"></i>Giriş Yap
+                    </h4>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-action="Login" method="post">
+                        <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
+                        
+                        <div class="mb-3">
+                            <label asp-for="Username" class="form-label">
+                                <i class="fas fa-user me-1"></i>@Html.DisplayNameFor(m => m.Username)
+                            </label>
+                            <input asp-for="Username" class="form-control" placeholder="Kullanıcı adınızı giriniz" />
+                            <span asp-validation-for="Username" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Password" class="form-label">
+                                <i class="fas fa-lock me-1"></i>@Html.DisplayNameFor(m => m.Password)
+                            </label>
+                            <input asp-for="Password" class="form-control" placeholder="Şifrenizi giriniz" />
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input asp-for="RememberMe" class="form-check-input" />
+                                <label asp-for="RememberMe" class="form-check-label">
+                                    @Html.DisplayNameFor(m => m.RememberMe)
+                                </label>
+                            </div>
+                        </div>
+
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-sign-in-alt me-2"></i>Giriş Yap
+                            </button>
+                        </div>
+                    </form>
+
+                    <hr class="my-4" />
+
+                    <div class="text-center">
+                        <p class="text-muted mb-2">Hesabınız yok mu?</p>
+                        <a asp-action="Register" class="btn btn-outline-primary">
+                            <i class="fas fa-user-plus me-2"></i>Kayıt Ol
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        function fillCredentials(username, password) {
+            document.getElementById('Username').value = username;
+            document.getElementById('Password').value = password;
+            
+            // Kullanıcıya bilgi ver
+            const button = event.target;
+            const originalText = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-check me-1"></i>Bilgiler Dolduruldu!';
+            button.classList.remove('btn-outline-primary', 'btn-outline-success');
+            button.classList.add('btn-success');
+            
+            // 2 saniye sonra orijinal haline döndür
+            setTimeout(() => {
+                button.innerHTML = originalText;
+                button.classList.remove('btn-success');
+                if (username === 'admin') {
+                    button.classList.add('btn-outline-primary');
+                } else {
+                    button.classList.add('btn-outline-success');
+                }
+            }, 2000);
+        }
+        
+        function toggleTestUsers() {
+            const body = document.getElementById('testUsersBody');
+            const icon = document.getElementById('testUsersIcon');
+            
+            if (body.style.display === 'none') {
+                body.style.display = 'block';
+                icon.classList.remove('fa-chevron-right');
+                icon.classList.add('fa-chevron-down');
+            } else {
+                body.style.display = 'none';
+                icon.classList.remove('fa-chevron-down');
+                icon.classList.add('fa-chevron-right');
+            }
+        }
+        
+        // Sayfa yüklendiğinde kullanıcı adı alanına odaklan
+        document.addEventListener('DOMContentLoaded', function() {
+            // Kullanıcı adı alanına odaklan
+            const usernameField = document.getElementById('Username');
+            if (usernameField) {
+                usernameField.focus();
+            }
+        });
+    </script>
+} 

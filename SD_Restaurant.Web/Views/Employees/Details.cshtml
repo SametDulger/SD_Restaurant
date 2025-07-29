@@ -1,63 +1,182 @@
-@model SD_Restaurant.Web.Models.EmployeeViewModel
+﻿@model SD_Restaurant.Web.Models.EmployeeViewModel
 
 @{
     ViewData["Title"] = "Personel Detayı";
 }
 
-<div class="container">
-    <h2>Personel Detayı</h2>
-
-    <div class="row">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="card-title">@Model.FirstName @Model.LastName</h4>
-                    <hr />
-                    <dl class="row">
-                        <dt class="col-sm-3">Personel ID:</dt>
-                        <dd class="col-sm-9">@Model.Id</dd>
-
-                        <dt class="col-sm-3">Ad:</dt>
-                        <dd class="col-sm-9">@Model.FirstName</dd>
-
-                        <dt class="col-sm-3">Soyad:</dt>
-                        <dd class="col-sm-9">@Model.LastName</dd>
-
-                        <dt class="col-sm-3">E-posta:</dt>
-                        <dd class="col-sm-9">@Model.Email</dd>
-
-                        <dt class="col-sm-3">Telefon:</dt>
-                        <dd class="col-sm-9">@Model.Phone</dd>
-
-                        <dt class="col-sm-3">Pozisyon:</dt>
-                        <dd class="col-sm-9">@Model.Position</dd>
-
-                        <dt class="col-sm-3">Rol:</dt>
-                        <dd class="col-sm-9">@Model.Role</dd>
-
-                        <dt class="col-sm-3">Departman:</dt>
-                        <dd class="col-sm-9">@Model.Department</dd>
-
-                        <dt class="col-sm-3">Aktif mi:</dt>
-                        <dd class="col-sm-9">@(Model.IsActive ? "Evet" : "Hayır")</dd>
-
-                        <dt class="col-sm-3">Oluşturulma Tarihi:</dt>
-                        <dd class="col-sm-9">@Model.CreatedDate.ToString("dd/MM/yyyy HH:mm")</dd>
-
-                        @if (Model.UpdatedDate.HasValue)
-                        {
-                            <dt class="col-sm-3">Güncellenme Tarihi:</dt>
-                            <dd class="col-sm-9">@Model.UpdatedDate.Value.ToString("dd/MM/yyyy HH:mm")</dd>
-                        }
-                    </dl>
+<div class="container-fluid fade-in">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="h3 mb-0 text-gradient">
+                        <i class="fas fa-user-tie me-2"></i>Personel Detayı
+                    </h1>
+                    <p class="text-muted mb-0">@Model.FirstName @Model.LastName bilgileri</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">
+                        <i class="fas fa-edit me-2"></i>Düzenle
+                    </a>
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Geri Dön
+                    </a>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="mt-3">
-        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Düzenle</a>
-        <a asp-action="Index" class="btn btn-secondary">Listeye Dön</a>
-        <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">Sil</a>
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="card-title mb-0">
+                        <i class="fas fa-info-circle me-2"></i>@Model.FirstName @Model.LastName Bilgileri
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <dl class="row">
+                                <dt class="col-sm-4 text-muted">Personel ID:</dt>
+                                <dd class="col-sm-8"><strong>@Model.Id</strong></dd>
+
+                                <dt class="col-sm-4 text-muted">Ad:</dt>
+                                <dd class="col-sm-8"><strong>@Model.FirstName</strong></dd>
+
+                                <dt class="col-sm-4 text-muted">Soyad:</dt>
+                                <dd class="col-sm-8"><strong>@Model.LastName</strong></dd>
+
+                                <dt class="col-sm-4 text-muted">E-posta:</dt>
+                                <dd class="col-sm-8">@Model.Email</dd>
+                            </dl>
+                        </div>
+                        <div class="col-md-6">
+                            <dl class="row">
+                                <dt class="col-sm-4 text-muted">Telefon:</dt>
+                                <dd class="col-sm-8">@Model.Phone</dd>
+
+                                <dt class="col-sm-4 text-muted">Pozisyon:</dt>
+                                <dd class="col-sm-8">
+                                    <span class="badge bg-info">@Model.Position</span>
+                                </dd>
+
+                                <dt class="col-sm-4 text-muted">Rol:</dt>
+                                <dd class="col-sm-8">
+                                    <span class="badge bg-warning">@Model.Role</span>
+                                </dd>
+
+                                <dt class="col-sm-4 text-muted">Departman:</dt>
+                                <dd class="col-sm-8">
+                                    <span class="badge bg-success">@Model.Department</span>
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <dl class="row">
+                            <dt class="col-sm-3 text-muted">Maaş:</dt>
+                            <dd class="col-sm-9">
+                                <span class="badge bg-primary fs-6">@Model.Salary.ToString("C")</span>
+                            </dd>
+
+                            <dt class="col-sm-3 text-muted">İşe Başlama:</dt>
+                            <dd class="col-sm-9">@Model.HireDate.ToString("dd/MM/yyyy")</dd>
+
+                            <dt class="col-sm-3 text-muted">Aktif mi:</dt>
+                            <dd class="col-sm-9">
+                                @if (Model.IsActive)
+                                {
+                                    <span class="badge bg-success"><i class="fas fa-check me-1"></i>Evet</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger"><i class="fas fa-times me-1"></i>Hayır</span>
+                                }
+                            </dd>
+                        </dl>
+                    </div>
+
+                    <div class="mt-4">
+                        <dl class="row">
+                            <dt class="col-sm-3 text-muted">Oluşturulma Tarihi:</dt>
+                            <dd class="col-sm-9">@Model.CreatedDate.ToString("dd/MM/yyyy HH:mm")</dd>
+
+                            @if (Model.UpdatedDate.HasValue)
+                            {
+                                <dt class="col-sm-3 text-muted">Güncellenme Tarihi:</dt>
+                                <dd class="col-sm-9">@Model.UpdatedDate.Value.ToString("dd/MM/yyyy HH:mm")</dd>
+                            }
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-chart-bar me-2"></i>Personel Özeti
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-3">
+                        <div class="display-4 text-primary">@Model.Salary.ToString("C")</div>
+                        <div class="text-muted">Aylık Maaş</div>
+                    </div>
+                    
+                    <div class="list-group list-group-flush">
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>Pozisyon</span>
+                            <span class="badge bg-info">@Model.Position</span>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>Departman</span>
+                            <span class="badge bg-success">@Model.Department</span>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>Rol</span>
+                            <span class="badge bg-warning">@Model.Role</span>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>Durum</span>
+                            @if (Model.IsActive)
+                            {
+                                <span class="badge bg-success">Aktif</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">Pasif</span>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mt-3">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-tools me-2"></i>Hızlı İşlemler
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary">
+                            <i class="fas fa-edit me-2"></i>Personel Düzenle
+                        </a>
+                        <a href="mailto:@Model.Email" class="btn btn-outline-info">
+                            <i class="fas fa-envelope me-2"></i>E-posta Gönder
+                        </a>
+                        <a href="tel:@Model.Phone" class="btn btn-outline-success">
+                            <i class="fas fa-phone me-2"></i>Ara
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div> 
+
+

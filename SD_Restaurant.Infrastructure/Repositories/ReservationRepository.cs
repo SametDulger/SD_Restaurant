@@ -46,7 +46,7 @@ namespace SD_Restaurant.Infrastructure.Repositories
             return await _context.Reservations
                 .Include(r => r.Customer)
                 .Include(r => r.Table)
-                .Where(r => r.Status == "Active" && r.ReservationDate >= DateTime.Now)
+                .Where(r => r.Status.ToString() == "Active" && r.ReservationDate >= DateTime.Now)
                 .ToListAsync();
         }
 

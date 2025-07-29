@@ -1,4 +1,4 @@
-@model SD_Restaurant.Web.Models.CategoryViewModel
+﻿@model SD_Restaurant.Web.Models.CategoryViewModel
 
 @{
     ViewData["Title"] = "Yeni Kategori";
@@ -15,19 +15,19 @@
                     <form asp-action="Create">
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                         
-                        <div class="form-group">
-                            <label asp-for="Name" class="control-label">Kategori Adı</label>
+                        <div class="mb-3">
+                            <label asp-for="Name" class="form-label">Kategori Adı</label>
                             <input asp-for="Name" class="form-control" />
                             <span asp-validation-for="Name" class="text-danger"></span>
                         </div>
                         
-                        <div class="form-group">
-                            <label asp-for="Description" class="control-label">Açıklama</label>
+                        <div class="mb-3">
+                            <label asp-for="Description" class="form-label">Açıklama</label>
                             <textarea asp-for="Description" class="form-control" rows="3"></textarea>
                             <span asp-validation-for="Description" class="text-danger"></span>
                         </div>
                         
-                        <div class="form-group">
+                        <div class="mb-3">
                             <input type="submit" value="Kaydet" class="btn btn-primary" />
                             <a asp-action="Index" class="btn btn-secondary">Geri Dön</a>
                         </div>
@@ -41,3 +41,5 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 } 
+
+

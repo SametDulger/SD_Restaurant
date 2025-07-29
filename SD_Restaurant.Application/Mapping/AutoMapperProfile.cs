@@ -11,8 +11,8 @@ namespace SD_Restaurant.Application.Mapping
             // Product mappings
             CreateMap<Product, ProductDto>()
                 .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category != null ? src.Category.Name : ""))
-                .ForMember(dest => dest.CurrentStock, opt => opt.MapFrom(src => src.Stocks != null && src.Stocks.FirstOrDefault() != null ? src.Stocks.FirstOrDefault().Quantity : 0))
-                .ForMember(dest => dest.StockLocation, opt => opt.MapFrom(src => src.Stocks != null && src.Stocks.FirstOrDefault() != null ? src.Stocks.FirstOrDefault().Location : ""));
+                .ForMember(dest => dest.CurrentStock, opt => opt.MapFrom(src => src.Stocks != null && src.Stocks.Any() ? src.Stocks.First().Quantity : 0))
+                .ForMember(dest => dest.StockLocation, opt => opt.MapFrom(src => src.Stocks != null && src.Stocks.Any() ? src.Stocks.First().Location : ""));
 
             CreateMap<CreateProductDto, Product>();
             CreateMap<UpdateProductDto, Product>();
@@ -20,8 +20,8 @@ namespace SD_Restaurant.Application.Mapping
             // Order mappings
             CreateMap<Order, OrderDto>()
                 .ForMember(dest => dest.TableNumber, opt => opt.MapFrom(src => src.Table != null ? src.Table.TableNumber : ""))
-                .ForMember(dest => dest.CustomerName, opt => opt.MapFrom(src => src.Customer != null ? ($"{src.Customer.FirstName} {src.Customer.LastName}") : ""))
-                .ForMember(dest => dest.EmployeeName, opt => opt.MapFrom(src => src.Employee != null ? ($"{src.Employee.FirstName} {src.Employee.LastName}") : ""));
+                .ForMember(dest => dest.CustomerName, opt => opt.MapFrom(src => src.Customer != null ? $"{src.Customer.FirstName} {src.Customer.LastName}" : ""))
+                .ForMember(dest => dest.EmployeeName, opt => opt.MapFrom(src => src.Employee != null ? $"{src.Employee.FirstName} {src.Employee.LastName}" : ""));
 
             CreateMap<OrderItem, OrderItemDto>()
                 .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product != null ? src.Product.Name : ""));
@@ -66,6 +66,13 @@ namespace SD_Restaurant.Application.Mapping
             CreateMap<Payment, PaymentDto>();
             CreateMap<CreatePaymentDto, Payment>();
             CreateMap<UpdatePaymentDto, Payment>();
+
+            // Ingredient mappings
+            CreateMap<Ingredient, IngredientDto>()
+                .ForMember(dest => dest.CurrentStock, opt => opt.MapFrom(src => src.Stocks != null && src.Stocks.Any() ? src.Stocks.First().Quantity : 0))
+                .ForMember(dest => dest.StockLocation, opt => opt.MapFrom(src => src.Stocks != null && src.Stocks.Any() ? src.Stocks.First().Location : ""));
+            CreateMap<CreateIngredientDto, Ingredient>();
+            CreateMap<UpdateIngredientDto, Ingredient>();
 
             // Recipe mappings
             CreateMap<Recipe, RecipeDto>()

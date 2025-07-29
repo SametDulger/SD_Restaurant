@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using SD_Restaurant.Core.Enums;
 
 namespace SD_Restaurant.Core.Entities
 {
@@ -11,7 +12,7 @@ namespace SD_Restaurant.Core.Entities
         
         public int Capacity { get; set; }
         
-        public string? Status { get; set; } // Boş, Dolu, Rezerve
+        public TableStatus Status { get; set; } = TableStatus.Available;
         
         public string? Location { get; set; } // İç mekan, Dış mekan, VIP vb.
         

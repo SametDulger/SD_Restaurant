@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using SD_Restaurant.Core.Enums;
 
 namespace SD_Restaurant.Application.DTOs
 {
@@ -13,6 +14,6 @@ namespace SD_Restaurant.Application.DTOs
         public decimal TaxAmount { get; set; }
         public decimal TotalAmount { get; set; }
         public string? SpecialInstructions { get; set; }
-        public string? Status { get; set; }
+        public OrderStatus Status { get; set; }
     }
 } 

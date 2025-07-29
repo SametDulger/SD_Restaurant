@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using SD_Restaurant.Application.DTOs;
+using SD_Restaurant.Core.Enums;
 
 namespace SD_Restaurant.Application.Services
 {
@@ -14,7 +15,7 @@ namespace SD_Restaurant.Application.Services
         Task<bool> DeleteOrderAsync(int id);
         Task<IEnumerable<OrderDto>> GetOrdersByDateRangeAsync(DateTime startDate, DateTime endDate);
         Task<IEnumerable<OrderDto>> GetOrdersByTableAsync(int tableId);
-        Task<IEnumerable<OrderDto>> GetOrdersByStatusAsync(string status);
+        Task<IEnumerable<OrderDto>> GetOrdersByStatusAsync(OrderStatus status);
         Task<decimal> CalculateOrderTotalAsync(int orderId);
         Task<string> GenerateOrderNumberAsync();
         Task<bool> ProcessOrderAsync(int orderId);

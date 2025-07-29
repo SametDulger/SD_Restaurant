@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using SD_Restaurant.Web.Models;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Text.Json;
-using System;
 
 namespace SD_Restaurant.Web.Controllers
 {
@@ -20,15 +20,15 @@ namespace SD_Restaurant.Web.Controllers
         public async Task<IActionResult> Index()
         {
             var httpClient = _httpClientFactory.CreateClient("ApiClient");
-            var response = await httpClient.GetAsync("api/stocks");
+            var response = await httpClient.GetAsync("stocks");
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                var stocks = JsonSerializer.Deserialize<List<StockViewModel>>(content, new JsonSerializerOptions
+                var apiResponse = JsonSerializer.Deserialize<ApiResponse<List<StockViewModel>>>(content, new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
                 });
-                return View(stocks);
+                return View(apiResponse?.Data ?? new List<StockViewModel>());
             }
             return View(new List<StockViewModel>());
         }
@@ -36,16 +36,16 @@ namespace SD_Restaurant.Web.Controllers
         public async Task<IActionResult> ByLocation(string location)
         {
             var httpClient = _httpClientFactory.CreateClient("ApiClient");
-            var response = await httpClient.GetAsync($"api/stocks/location/{Uri.EscapeDataString(location)}");
+            var response = await httpClient.GetAsync($"stocks/location/{Uri.EscapeDataString(location)}");
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                var stocks = JsonSerializer.Deserialize<List<StockViewModel>>(content, new JsonSerializerOptions
+                var apiResponse = JsonSerializer.Deserialize<ApiResponse<List<StockViewModel>>>(content, new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
                 });
                 ViewBag.Location = location;
-                return View("Index", stocks);
+                return View("Index", apiResponse?.Data ?? new List<StockViewModel>());
             }
             return View("Index", new List<StockViewModel>());
         }
@@ -53,16 +53,16 @@ namespace SD_Restaurant.Web.Controllers
         public async Task<IActionResult> ByProduct(int productId)
         {
             var httpClient = _httpClientFactory.CreateClient("ApiClient");
-            var response = await httpClient.GetAsync($"api/stocks/product/{productId}");
+            var response = await httpClient.GetAsync($"stocks/product/{productId}");
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                var stocks = JsonSerializer.Deserialize<List<StockViewModel>>(content, new JsonSerializerOptions
+                var apiResponse = JsonSerializer.Deserialize<ApiResponse<List<StockViewModel>>>(content, new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
                 });
                 ViewBag.ProductId = productId;
-                return View("Index", stocks);
+                return View("Index", apiResponse?.Data ?? new List<StockViewModel>());
             }
             return View("Index", new List<StockViewModel>());
         }
@@ -70,16 +70,16 @@ namespace SD_Restaurant.Web.Controllers
         public async Task<IActionResult> LowStock()
         {
             var httpClient = _httpClientFactory.CreateClient("ApiClient");
-            var response = await httpClient.GetAsync("api/stocks/low-stock");
+            var response = await httpClient.GetAsync("stocks/low-stock");
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                var stocks = JsonSerializer.Deserialize<List<StockViewModel>>(content, new JsonSerializerOptions
+                var apiResponse = JsonSerializer.Deserialize<ApiResponse<List<StockViewModel>>>(content, new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
                 });
                 ViewBag.Title = "Düşük Stok Ürünleri";
-                return View("Index", stocks);
+                return View("Index", apiResponse?.Data ?? new List<StockViewModel>());
             }
             return View("Index", new List<StockViewModel>());
         }
@@ -87,7 +87,7 @@ namespace SD_Restaurant.Web.Controllers
         public async Task<IActionResult> CheckAvailability(int productId, string location, decimal quantity)
         {
             var httpClient = _httpClientFactory.CreateClient("ApiClient");
-            var response = await httpClient.GetAsync($"api/stocks/check-availability?productId={productId}&location={Uri.EscapeDataString(location)}&quantity={quantity}");
+            var response = await httpClient.GetAsync($"stocks/check-availability?productId={productId}&location={Uri.EscapeDataString(location)}&quantity={quantity}");
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
@@ -117,7 +117,7 @@ namespace SD_Restaurant.Web.Controllers
                 var httpClient = _httpClientFactory.CreateClient("ApiClient");
                 var json = JsonSerializer.Serialize(stock);
                 var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-                var response = await httpClient.PostAsync("api/stocks", content);
+                var response = await httpClient.PostAsync("stocks", content);
                 
                 if (response.IsSuccessStatusCode)
                 {
@@ -130,15 +130,15 @@ namespace SD_Restaurant.Web.Controllers
         public async Task<IActionResult> Edit(int id)
         {
             var httpClient = _httpClientFactory.CreateClient("ApiClient");
-            var response = await httpClient.GetAsync($"api/stocks/{id}");
+            var response = await httpClient.GetAsync($"stocks/{id}");
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                var stock = JsonSerializer.Deserialize<StockViewModel>(content, new JsonSerializerOptions
+                var apiResponse = JsonSerializer.Deserialize<ApiResponse<StockViewModel>>(content, new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
                 });
-                return View(stock);
+                return View(apiResponse?.Data);
             }
             return NotFound();
         }
@@ -151,7 +151,7 @@ namespace SD_Restaurant.Web.Controllers
                 var httpClient = _httpClientFactory.CreateClient("ApiClient");
                 var json = JsonSerializer.Serialize(stock);
                 var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-                var response = await httpClient.PutAsync($"api/stocks/{id}", content);
+                var response = await httpClient.PutAsync($"stocks/{id}", content);
                 if (response.IsSuccessStatusCode)
                 {
                     return RedirectToAction(nameof(Index));
@@ -163,15 +163,15 @@ namespace SD_Restaurant.Web.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             var httpClient = _httpClientFactory.CreateClient("ApiClient");
-            var response = await httpClient.GetAsync($"api/stocks/{id}");
+            var response = await httpClient.GetAsync($"stocks/{id}");
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                var stock = JsonSerializer.Deserialize<StockViewModel>(content, new JsonSerializerOptions
+                var apiResponse = JsonSerializer.Deserialize<ApiResponse<StockViewModel>>(content, new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
                 });
-                return View(stock);
+                return View(apiResponse?.Data);
             }
             return NotFound();
         }
@@ -180,7 +180,7 @@ namespace SD_Restaurant.Web.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var httpClient = _httpClientFactory.CreateClient("ApiClient");
-            var response = await httpClient.DeleteAsync($"api/stocks/{id}");
+            var response = await httpClient.DeleteAsync($"stocks/{id}");
             if (response.IsSuccessStatusCode)
             {
                 return RedirectToAction(nameof(Index));
@@ -191,15 +191,15 @@ namespace SD_Restaurant.Web.Controllers
         public async Task<IActionResult> Details(int id)
         {
             var httpClient = _httpClientFactory.CreateClient("ApiClient");
-            var response = await httpClient.GetAsync($"api/stocks/{id}");
+            var response = await httpClient.GetAsync($"stocks/{id}");
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                var stock = JsonSerializer.Deserialize<StockViewModel>(content, new JsonSerializerOptions
+                var apiResponse = JsonSerializer.Deserialize<ApiResponse<StockViewModel>>(content, new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
                 });
-                return View(stock);
+                return View(apiResponse?.Data);
             }
             return NotFound();
         }
@@ -208,7 +208,7 @@ namespace SD_Restaurant.Web.Controllers
         public async Task<IActionResult> UpdateQuantity(int productId, string location, decimal quantity)
         {
             var httpClient = _httpClientFactory.CreateClient("ApiClient");
-            var response = await httpClient.PutAsync($"api/stocks/update-quantity?productId={productId}&location={Uri.EscapeDataString(location)}&quantity={quantity}", null);
+            var response = await httpClient.PutAsync($"stocks/update-quantity?productId={productId}&location={Uri.EscapeDataString(location)}&quantity={quantity}", null);
             if (response.IsSuccessStatusCode)
             {
                 TempData["Message"] = "Stok miktarı başarıyla güncellendi.";

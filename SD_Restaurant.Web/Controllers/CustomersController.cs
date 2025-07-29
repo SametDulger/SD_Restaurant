@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using SD_Restaurant.Web.Models;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -19,15 +20,15 @@ namespace SD_Restaurant.Web.Controllers
         public async Task<IActionResult> Index()
         {
             var httpClient = _httpClientFactory.CreateClient("ApiClient");
-            var response = await httpClient.GetAsync("api/customers");
+            var response = await httpClient.GetAsync("customers");
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                var customers = JsonSerializer.Deserialize<List<CustomerViewModel>>(content, new JsonSerializerOptions
+                var apiResponse = JsonSerializer.Deserialize<ApiResponse<List<CustomerViewModel>>>(content, new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
                 });
-                return View(customers);
+                return View(apiResponse?.Data ?? new List<CustomerViewModel>());
             }
             return View(new List<CustomerViewModel>());
         }
@@ -40,16 +41,16 @@ namespace SD_Restaurant.Web.Controllers
             }
 
             var httpClient = _httpClientFactory.CreateClient("ApiClient");
-            var response = await httpClient.GetAsync($"api/customers/search?term={Uri.EscapeDataString(term)}");
+            var response = await httpClient.GetAsync($"customers/search?term={Uri.EscapeDataString(term)}");
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                var customers = JsonSerializer.Deserialize<List<CustomerViewModel>>(content, new JsonSerializerOptions
+                var apiResponse = JsonSerializer.Deserialize<ApiResponse<List<CustomerViewModel>>>(content, new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
                 });
                 ViewBag.SearchTerm = term;
-                return View("Index", customers);
+                return View("Index", apiResponse?.Data ?? new List<CustomerViewModel>());
             }
             return View("Index", new List<CustomerViewModel>());
         }
@@ -67,7 +68,7 @@ namespace SD_Restaurant.Web.Controllers
                 var httpClient = _httpClientFactory.CreateClient("ApiClient");
                 var json = JsonSerializer.Serialize(customer);
                 var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-                var response = await httpClient.PostAsync("api/customers", content);
+                var response = await httpClient.PostAsync("customers", content);
                 
                 if (response.IsSuccessStatusCode)
                 {
@@ -80,15 +81,15 @@ namespace SD_Restaurant.Web.Controllers
         public async Task<IActionResult> Edit(int id)
         {
             var httpClient = _httpClientFactory.CreateClient("ApiClient");
-            var response = await httpClient.GetAsync($"api/customers/{id}");
+            var response = await httpClient.GetAsync($"customers/{id}");
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                var customer = JsonSerializer.Deserialize<CustomerViewModel>(content, new JsonSerializerOptions
+                var apiResponse = JsonSerializer.Deserialize<ApiResponse<CustomerViewModel>>(content, new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
                 });
-                return View(customer);
+                return View(apiResponse?.Data);
             }
             return NotFound();
         }
@@ -101,7 +102,7 @@ namespace SD_Restaurant.Web.Controllers
                 var httpClient = _httpClientFactory.CreateClient("ApiClient");
                 var json = JsonSerializer.Serialize(customer);
                 var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-                var response = await httpClient.PutAsync($"api/customers/{id}", content);
+                var response = await httpClient.PutAsync($"customers/{id}", content);
                 if (response.IsSuccessStatusCode)
                 {
                     return RedirectToAction(nameof(Index));
@@ -113,15 +114,15 @@ namespace SD_Restaurant.Web.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             var httpClient = _httpClientFactory.CreateClient("ApiClient");
-            var response = await httpClient.GetAsync($"api/customers/{id}");
+            var response = await httpClient.GetAsync($"customers/{id}");
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                var customer = JsonSerializer.Deserialize<CustomerViewModel>(content, new JsonSerializerOptions
+                var apiResponse = JsonSerializer.Deserialize<ApiResponse<CustomerViewModel>>(content, new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
                 });
-                return View(customer);
+                return View(apiResponse?.Data);
             }
             return NotFound();
         }
@@ -130,7 +131,7 @@ namespace SD_Restaurant.Web.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var httpClient = _httpClientFactory.CreateClient("ApiClient");
-            var response = await httpClient.DeleteAsync($"api/customers/{id}");
+            var response = await httpClient.DeleteAsync($"customers/{id}");
             if (response.IsSuccessStatusCode)
             {
                 return RedirectToAction(nameof(Index));
@@ -141,15 +142,15 @@ namespace SD_Restaurant.Web.Controllers
         public async Task<IActionResult> Details(int id)
         {
             var httpClient = _httpClientFactory.CreateClient("ApiClient");
-            var response = await httpClient.GetAsync($"api/customers/{id}");
+            var response = await httpClient.GetAsync($"customers/{id}");
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                var customer = JsonSerializer.Deserialize<CustomerViewModel>(content, new JsonSerializerOptions
+                var apiResponse = JsonSerializer.Deserialize<ApiResponse<CustomerViewModel>>(content, new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
                 });
-                return View(customer);
+                return View(apiResponse?.Data);
             }
             return NotFound();
         }
