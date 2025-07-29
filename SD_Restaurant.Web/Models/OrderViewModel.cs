@@ -19,7 +19,6 @@ namespace SD_Restaurant.Web.Models
         [Range(0, double.MaxValue, ErrorMessage = "Toplam tutar pozitif bir değer olmalıdır")]
         public decimal TotalAmount { get; set; }
 
-        [StringLength(50, ErrorMessage = "Durum en fazla 50 karakter olabilir")]
         public string? Status { get; set; }
 
         [StringLength(500, ErrorMessage = "Notlar en fazla 500 karakter olabilir")]
@@ -34,6 +33,10 @@ namespace SD_Restaurant.Web.Models
         public decimal FinalAmount { get; set; }
         public string? Currency { get; set; }
         public List<OrderItemViewModel>? OrderItems { get; set; }
+        
+        // Added missing properties
+        public DateTime CreatedDate { get; set; }
+        public DateTime? UpdatedDate { get; set; }
     }
 
     public class OrderItemViewModel

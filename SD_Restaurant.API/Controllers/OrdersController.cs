@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SD_Restaurant.Application.DTOs;
 using SD_Restaurant.Application.Services;
+using SD_Restaurant.Core.Enums;
 
 namespace SD_Restaurant.API.Controllers
 {
@@ -19,35 +20,39 @@ namespace SD_Restaurant.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<OrderDto>>> GetOrders()
+        public async Task<ActionResult<ApiResponse<IEnumerable<OrderDto>>>> GetOrders()
         {
             var orders = await _orderService.GetAllOrdersAsync();
-            return Ok(orders);
+            return Ok(ApiResponse<IEnumerable<OrderDto>>.SuccessResult(orders, "Siparişler başarıyla getirildi"));
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<OrderDto>> GetOrder(int id)
+        public async Task<ActionResult<ApiResponse<OrderDto>>> GetOrder(int id)
         {
             var order = await _orderService.GetOrderByIdAsync(id);
             if (order == null)
             {
-                return NotFound();
+                return NotFound(ApiResponse<OrderDto>.ErrorResult("Sipariş bulunamadı"));
             }
-            return Ok(order);
+            return Ok(ApiResponse<OrderDto>.SuccessResult(order, "Sipariş başarıyla getirildi"));
         }
 
         [HttpGet("table/{tableId}")]
-        public async Task<ActionResult<IEnumerable<OrderDto>>> GetOrdersByTable(int tableId)
+        public async Task<ActionResult<ApiResponse<IEnumerable<OrderDto>>>> GetOrdersByTable(int tableId)
         {
             var orders = await _orderService.GetOrdersByTableAsync(tableId);
-            return Ok(orders);
+            return Ok(ApiResponse<IEnumerable<OrderDto>>.SuccessResult(orders, "Masa siparişleri başarıyla getirildi"));
         }
 
         [HttpGet("status/{status}")]
-        public async Task<ActionResult<IEnumerable<OrderDto>>> GetOrdersByStatus(string status)
+        public async Task<ActionResult<ApiResponse<IEnumerable<OrderDto>>>> GetOrdersByStatus(string status)
         {
-            var orders = await _orderService.GetOrdersByStatusAsync(status);
-            return Ok(orders);
+            if (Enum.TryParse<OrderStatus>(status, true, out var orderStatus))
+            {
+                var orders = await _orderService.GetOrdersByStatusAsync(orderStatus);
+                return Ok(ApiResponse<IEnumerable<OrderDto>>.SuccessResult(orders, "Durum bazlı siparişler getirildi"));
+            }
+            return BadRequest(ApiResponse<IEnumerable<OrderDto>>.ErrorResult("Geçersiz durum değeri"));
         }
 
         [HttpGet("date-range")]
@@ -60,50 +65,50 @@ namespace SD_Restaurant.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<OrderDto>> CreateOrder(CreateOrderDto createOrderDto)
+        public async Task<ActionResult<ApiResponse<OrderDto>>> CreateOrder(CreateOrderDto createOrderDto)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(ApiResponse<OrderDto>.ErrorResult("Geçersiz veri", GetModelStateErrors()));
             }
 
             var createdOrder = await _orderService.CreateOrderAsync(createOrderDto);
-            return CreatedAtAction(nameof(GetOrder), new { id = createdOrder.Id }, createdOrder);
+            return CreatedAtAction(nameof(GetOrder), new { id = createdOrder.Id }, 
+                ApiResponse<OrderDto>.SuccessResult(createdOrder, "Sipariş başarıyla oluşturuldu"));
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateOrder(int id, UpdateOrderDto updateOrderDto)
+        public async Task<ActionResult<ApiResponse<object>>> UpdateOrder(int id, UpdateOrderDto updateOrderDto)
         {
             if (id != updateOrderDto.Id)
             {
-                return BadRequest();
+                return BadRequest(ApiResponse<object>.ErrorResult("ID uyumsuzluğu"));
             }
 
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(ApiResponse<object>.ErrorResult("Geçersiz veri", GetModelStateErrors()));
             }
 
             var result = await _orderService.UpdateOrderAsync(updateOrderDto);
             if (!result)
             {
-                return NotFound();
+                return NotFound(ApiResponse<object>.ErrorResult("Sipariş bulunamadı"));
             }
 
-            return NoContent();
+            return Ok(ApiResponse<object>.SuccessResult(new object(), "Sipariş başarıyla güncellendi"));
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteOrder(int id)
+        public async Task<ActionResult<ApiResponse<object>>> DeleteOrder(int id)
         {
-            var order = await _orderService.GetOrderByIdAsync(id);
-            if (order == null)
+            var result = await _orderService.DeleteOrderAsync(id);
+            if (!result)
             {
-                return NotFound();
+                return NotFound(ApiResponse<object>.ErrorResult("Sipariş bulunamadı"));
             }
 
-            await _orderService.DeleteOrderAsync(id);
-            return NoContent();
+            return Ok(ApiResponse<object>.SuccessResult(new object(), "Sipariş başarıyla silindi"));
         }
 
         [HttpPost("{id}/process")]
@@ -122,6 +127,19 @@ namespace SD_Restaurant.API.Controllers
         {
             var total = await _orderService.CalculateOrderTotalAsync(id);
             return Ok(total);
+        }
+
+        private List<string> GetModelStateErrors()
+        {
+            var errors = new List<string>();
+            foreach (var modelState in ModelState.Values)
+            {
+                foreach (var error in modelState.Errors)
+                {
+                    errors.Add(error.ErrorMessage);
+                }
+            }
+            return errors;
         }
     }
 } 

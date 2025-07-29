@@ -19,15 +19,15 @@ namespace SD_Restaurant.Web.Controllers
         public async Task<IActionResult> Index()
         {
             var httpClient = _httpClientFactory.CreateClient("ApiClient");
-            var response = await httpClient.GetAsync("api/categories");
+            var response = await httpClient.GetAsync("categories");
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                var categories = JsonSerializer.Deserialize<List<CategoryViewModel>>(content, new JsonSerializerOptions
+                var apiResponse = JsonSerializer.Deserialize<ApiResponse<List<CategoryViewModel>>>(content, new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
                 });
-                return View(categories);
+                return View(apiResponse?.Data ?? new List<CategoryViewModel>());
             }
             return View(new List<CategoryViewModel>());
         }
@@ -45,7 +45,7 @@ namespace SD_Restaurant.Web.Controllers
                 var httpClient = _httpClientFactory.CreateClient("ApiClient");
                 var json = JsonSerializer.Serialize(category);
                 var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-                var response = await httpClient.PostAsync("api/categories", content);
+                var response = await httpClient.PostAsync("categories", content);
                 
                 if (response.IsSuccessStatusCode)
                 {
@@ -58,7 +58,7 @@ namespace SD_Restaurant.Web.Controllers
         public async Task<IActionResult> Edit(int id)
         {
             var httpClient = _httpClientFactory.CreateClient("ApiClient");
-            var response = await httpClient.GetAsync($"api/categories/{id}");
+            var response = await httpClient.GetAsync($"categories/{id}");
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
@@ -79,7 +79,7 @@ namespace SD_Restaurant.Web.Controllers
                 var httpClient = _httpClientFactory.CreateClient("ApiClient");
                 var json = JsonSerializer.Serialize(category);
                 var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-                var response = await httpClient.PutAsync($"api/categories/{id}", content);
+                var response = await httpClient.PutAsync($"categories/{id}", content);
                 
                 if (response.IsSuccessStatusCode)
                 {
@@ -92,7 +92,7 @@ namespace SD_Restaurant.Web.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             var httpClient = _httpClientFactory.CreateClient("ApiClient");
-            var response = await httpClient.GetAsync($"api/categories/{id}");
+            var response = await httpClient.GetAsync($"categories/{id}");
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
@@ -109,7 +109,7 @@ namespace SD_Restaurant.Web.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var httpClient = _httpClientFactory.CreateClient("ApiClient");
-            var response = await httpClient.DeleteAsync($"api/categories/{id}");
+            var response = await httpClient.DeleteAsync($"categories/{id}");
             if (response.IsSuccessStatusCode)
             {
                 return RedirectToAction(nameof(Index));

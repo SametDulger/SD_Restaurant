@@ -18,67 +18,81 @@ namespace SD_Restaurant.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CategoryDto>>> GetCategories()
+        public async Task<ActionResult<ApiResponse<IEnumerable<CategoryDto>>>> GetCategories()
         {
             var categories = await _categoryService.GetAllCategoriesAsync();
-            return Ok(categories);
+            return Ok(ApiResponse<IEnumerable<CategoryDto>>.SuccessResult(categories, "Kategoriler başarıyla getirildi"));
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<CategoryDto>> GetCategory(int id)
+        public async Task<ActionResult<ApiResponse<CategoryDto>>> GetCategory(int id)
         {
             var category = await _categoryService.GetCategoryByIdAsync(id);
             if (category == null)
             {
-                return NotFound();
+                return NotFound(ApiResponse<CategoryDto>.ErrorResult("Kategori bulunamadı"));
             }
-            return Ok(category);
+            return Ok(ApiResponse<CategoryDto>.SuccessResult(category, "Kategori başarıyla getirildi"));
         }
 
         [HttpPost]
-        public async Task<ActionResult<CategoryDto>> CreateCategory(CreateCategoryDto createCategoryDto)
+        public async Task<ActionResult<ApiResponse<CategoryDto>>> CreateCategory(CreateCategoryDto createCategoryDto)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(ApiResponse<CategoryDto>.ErrorResult("Geçersiz veri", GetModelStateErrors()));
             }
 
             var createdCategory = await _categoryService.CreateCategoryAsync(createCategoryDto);
-            return CreatedAtAction(nameof(GetCategory), new { id = createdCategory.Id }, createdCategory);
+            return CreatedAtAction(nameof(GetCategory), new { id = createdCategory.Id }, 
+                ApiResponse<CategoryDto>.SuccessResult(createdCategory, "Kategori başarıyla oluşturuldu"));
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateCategory(int id, UpdateCategoryDto updateCategoryDto)
+        public async Task<ActionResult<ApiResponse<object>>> UpdateCategory(int id, UpdateCategoryDto updateCategoryDto)
         {
             if (id != updateCategoryDto.Id)
             {
-                return BadRequest();
+                return BadRequest(ApiResponse<object>.ErrorResult("ID uyumsuzluğu"));
             }
 
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(ApiResponse<object>.ErrorResult("Geçersiz veri", GetModelStateErrors()));
             }
 
             var result = await _categoryService.UpdateCategoryAsync(updateCategoryDto);
             if (!result)
             {
-                return NotFound();
+                return NotFound(ApiResponse<object>.ErrorResult("Kategori bulunamadı"));
             }
 
-            return NoContent();
+            return Ok(ApiResponse<object>.SuccessResult(new object(), "Kategori başarıyla güncellendi"));
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCategory(int id)
+        public async Task<ActionResult<ApiResponse<object>>> DeleteCategory(int id)
         {
             var result = await _categoryService.DeleteCategoryAsync(id);
             if (!result)
             {
-                return NotFound();
+                return NotFound(ApiResponse<object>.ErrorResult("Kategori bulunamadı"));
             }
 
-            return NoContent();
+            return Ok(ApiResponse<object>.SuccessResult(new object(), "Kategori başarıyla silindi"));
+        }
+
+        private List<string> GetModelStateErrors()
+        {
+            var errors = new List<string>();
+            foreach (var modelState in ModelState.Values)
+            {
+                foreach (var error in modelState.Errors)
+                {
+                    errors.Add(error.ErrorMessage);
+                }
+            }
+            return errors;
         }
     }
 } 

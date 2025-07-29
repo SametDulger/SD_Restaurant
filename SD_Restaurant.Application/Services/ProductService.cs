@@ -92,7 +92,7 @@ namespace SD_Restaurant.Application.Services
             decimal totalCost = 0;
             foreach (var recipe in product.Recipes)
             {
-                var stock = await _stockRepository.GetStockByProductAndLocationAsync(recipe.IngredientId, "Depo");
+                var stock = await _stockRepository.GetStockByIngredientAndLocationAsync(recipe.IngredientId, "Depo");
                 if (stock != null)
                 {
                     totalCost += stock.Cost * recipe.Quantity;

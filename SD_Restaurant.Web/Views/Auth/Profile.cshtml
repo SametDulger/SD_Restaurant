@@ -1,0 +1,125 @@
+@model SD_Restaurant.Web.Models.UserProfileViewModel
+
+@{
+    ViewData["Title"] = "Kullanıcı Profili";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="card-title mb-0">
+                        <i class="fas fa-user-circle me-2"></i>Kullanıcı Profili
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <dl class="row">
+                                <dt class="col-sm-4">@Html.DisplayNameFor(m => m.Username)</dt>
+                                <dd class="col-sm-8">@Model.Username</dd>
+
+                                <dt class="col-sm-4">@Html.DisplayNameFor(m => m.Email)</dt>
+                                <dd class="col-sm-8">@Model.Email</dd>
+
+                                <dt class="col-sm-4">@Html.DisplayNameFor(m => m.FirstName)</dt>
+                                <dd class="col-sm-8">@(Model.FirstName ?? "Belirtilmemiş")</dd>
+
+                                <dt class="col-sm-4">@Html.DisplayNameFor(m => m.LastName)</dt>
+                                <dd class="col-sm-8">@(Model.LastName ?? "Belirtilmemiş")</dd>
+                            </dl>
+                        </div>
+                        <div class="col-md-6">
+                            <dl class="row">
+                                <dt class="col-sm-4">@Html.DisplayNameFor(m => m.Phone)</dt>
+                                <dd class="col-sm-8">@(Model.Phone ?? "Belirtilmemiş")</dd>
+
+                                <dt class="col-sm-4">@Html.DisplayNameFor(m => m.LastLoginDate)</dt>
+                                <dd class="col-sm-8">@Model.LastLoginDate.ToString("dd/MM/yyyy HH:mm")</dd>
+
+                                <dt class="col-sm-4">@Html.DisplayNameFor(m => m.IsActive)</dt>
+                                <dd class="col-sm-8">
+                                    @if (Model.IsActive)
+                                    {
+                                        <span class="badge bg-success">Aktif</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">Pasif</span>
+                                    }
+                                </dd>
+
+                                <dt class="col-sm-4">@Html.DisplayNameFor(m => m.Roles)</dt>
+                                <dd class="col-sm-8">
+                                    @if (Model.Roles.Any())
+                                    {
+                                        foreach (var role in Model.Roles)
+                                        {
+                                            <span class="badge bg-info me-1">@role</span>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">Rol atanmamış</span>
+                                    }
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <a asp-action="ChangePassword" class="btn btn-warning">
+                            <i class="fas fa-key me-2"></i>Şifre Değiştir
+                        </a>
+                        <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>Geri Dön
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-info text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-info-circle me-2"></i>Hızlı İşlemler
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a asp-controller="Products" asp-action="Index" class="btn btn-outline-primary">
+                            <i class="fas fa-box me-2"></i>Ürünleri Görüntüle
+                        </a>
+                        <a asp-controller="Orders" asp-action="Index" class="btn btn-outline-success">
+                            <i class="fas fa-shopping-cart me-2"></i>Siparişleri Görüntüle
+                        </a>
+                        <a asp-controller="Customers" asp-action="Index" class="btn btn-outline-info">
+                            <i class="fas fa-users me-2"></i>Müşterileri Görüntüle
+                        </a>
+                        <a asp-controller="Reports" asp-action="Index" class="btn btn-outline-warning">
+                            <i class="fas fa-chart-bar me-2"></i>Raporları Görüntüle
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mt-3">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-exclamation-triangle me-2"></i>Güvenlik
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning mb-0">
+                        <small>
+                            <i class="fas fa-shield-alt me-1"></i>
+                            <strong>Güvenlik Uyarısı:</strong> Şifrenizi düzenli olarak değiştirmeyi unutmayın.
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 

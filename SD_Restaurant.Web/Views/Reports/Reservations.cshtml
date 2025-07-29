@@ -1,0 +1,307 @@
+﻿@model SD_Restaurant.Web.Models.ReservationReportViewModel
+
+@{
+    ViewData["Title"] = "Rezervasyon Raporları";
+}
+
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="h3 mb-0">
+                        <i class="fas fa-calendar me-2"></i>Rezervasyon Raporları
+                    </h1>
+                    <p class="text-muted mb-0">Rezervasyon analizleri ve trendler</p>
+                </div>
+                <div>
+                    <a asp-action="Download" asp-route-reportType="reservations" class="btn btn-outline-info">
+                        <i class="fas fa-download me-1"></i>CSV İndir
+                    </a>
+                    <a asp-action="Index" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-1"></i>Geri Dön
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- İstatistik Kartları -->
+    <div class="row g-4 mb-4">
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="bg-primary bg-opacity-10 rounded p-3">
+                                <i class="fas fa-calendar-check fa-2x text-primary"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h4 class="mb-1">@Model.TotalReservations</h4>
+                            <p class="text-muted mb-0">Toplam Rezervasyon</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="bg-success bg-opacity-10 rounded p-3">
+                                <i class="fas fa-calendar-day fa-2x text-success"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h4 class="mb-1">@Model.TodayReservations</h4>
+                            <p class="text-muted mb-0">Bugünkü Rezervasyon</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="bg-info bg-opacity-10 rounded p-3">
+                                <i class="fas fa-calendar-week fa-2x text-info"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h4 class="mb-1">@Model.ThisWeekReservations</h4>
+                            <p class="text-muted mb-0">Bu Hafta</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="bg-warning bg-opacity-10 rounded p-3">
+                                <i class="fas fa-clock fa-2x text-warning"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h4 class="mb-1">@Model.ActiveReservations</h4>
+                            <p class="text-muted mb-0">Aktif Rezervasyon</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Grafikler -->
+    <div class="row g-4 mb-4">
+        <div class="col-xl-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">
+                        <i class="fas fa-chart-pie me-2"></i>Rezervasyon Durumu
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="reservationStatusChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">
+                        <i class="fas fa-chart-bar me-2"></i>Haftalık Rezervasyon Trendi
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="weeklyReservationChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bugünkü Rezervasyonlar -->
+    @if (Model.TodayReservations > 0)
+    {
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">
+                            <i class="fas fa-calendar-day me-2 text-success"></i>Bugünkü Rezervasyonlar
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            @foreach (var reservation in Model.Reservations.Where(r => r.ReservationDate.Date == DateTime.Today).Take(6))
+                            {
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="card border-0 bg-light">
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between align-items-start">
+                                                <div>
+                                                    <h6 class="mb-1">@reservation.CustomerName</h6>
+                                                    <p class="text-muted mb-1">Masa @reservation.TableNumber</p>
+                                                    <small class="text-muted">@reservation.NumberOfGuests kişi</small>
+                                                </div>
+                                                <div class="text-end">
+                                                    <span class="badge bg-success">@reservation.ReservationDate.ToString("HH:mm")</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Rezervasyon Listesi -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">
+                        <i class="fas fa-list me-2"></i>Rezervasyon Listesi
+                    </h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.Reservations.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Müşteri</th>
+                                        <th>Masa</th>
+                                        <th>Tarih</th>
+                                        <th>Saat</th>
+                                        <th>Kişi Sayısı</th>
+                                        <th>Durum</th>
+                                        <th>İşlemler</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var reservation in Model.Reservations.Take(15))
+                                    {
+                                        <tr>
+                                            <td>#@reservation.Id</td>
+                                            <td>@reservation.CustomerName</td>
+                                            <td>@reservation.TableNumber</td>
+                                            <td>@reservation.ReservationDate.ToString("dd/MM/yyyy")</td>
+                                            <td>@reservation.ReservationDate.ToString("HH:mm")</td>
+                                            <td>@reservation.NumberOfGuests</td>
+                                            <td>
+                                                <span class="badge bg-@(reservation.Status switch {
+                                                    "Active" => "success",
+                                                    "Completed" => "primary",
+                                                    "Cancelled" => "danger",
+                                                    _ => "secondary"
+                                                })">@reservation.Status</span>
+                                            </td>
+                                            <td>
+                                                <a asp-controller="Reservations" asp-action="Details" asp-route-id="@reservation.Id" class="btn btn-sm btn-outline-primary">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-4">
+                            <i class="fas fa-calendar fa-3x text-muted mb-3"></i>
+                            <h5 class="text-muted">Henüz rezervasyon verisi bulunmuyor</h5>
+                            <p class="text-muted">Sistemde kayıtlı rezervasyon bulunamadı.</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Rezervasyon durumu pasta grafiği
+            const reservationStatusCtx = document.getElementById('reservationStatusChart').getContext('2d');
+            new Chart(reservationStatusCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Aktif', 'Tamamlanan', 'İptal Edilen'],
+                    datasets: [{
+                        data: [@Model.ActiveReservations, @Model.CompletedReservations, @Model.CancelledReservations],
+                        backgroundColor: [
+                            '#28a745',
+                            '#007bff',
+                            '#dc3545'
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+
+            // Haftalık rezervasyon trendi çizgi grafiği
+            const weeklyReservationCtx = document.getElementById('weeklyReservationChart').getContext('2d');
+            new Chart(weeklyReservationCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'],
+                    datasets: [{
+                        label: 'Rezervasyon Sayısı',
+                        data: [8, 12, 10, 15, 18, 25, 22],
+                        borderColor: '#17a2b8',
+                        backgroundColor: 'rgba(23, 162, 184, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+} 
+

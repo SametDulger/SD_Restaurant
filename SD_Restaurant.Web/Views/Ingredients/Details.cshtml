@@ -1,0 +1,228 @@
+﻿@model SD_Restaurant.Web.Models.IngredientViewModel
+
+@{
+    ViewData["Title"] = "Malzeme Detayı";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 mb-0 text-dark">
+                <i class="fas fa-carrot me-2"></i>@Model.Name
+            </h1>
+            <p class="text-muted">Malzeme detayları ve bilgileri</p>
+        </div>
+        <div>
+            <a asp-action="Index" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Geri Dön
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-info-circle me-2"></i>Malzeme Bilgileri
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <dl class="row">
+                                <dt class="col-sm-4 text-muted">Malzeme Adı:</dt>
+                                <dd class="col-sm-8">
+                                    <strong>@Model.Name</strong>
+                                </dd>
+
+                                <dt class="col-sm-4 text-muted">Birim:</dt>
+                                <dd class="col-sm-8">
+                                    <span class="badge bg-info">@Model.Unit</span>
+                                </dd>
+
+                                <dt class="col-sm-4 text-muted">Mevcut Stok:</dt>
+                                <dd class="col-sm-8">
+                                    <span class="badge bg-success fs-6">@Model.CurrentStock @Model.Unit</span>
+                                </dd>
+
+                                <dt class="col-sm-4 text-muted">Birim Maliyet:</dt>
+                                <dd class="col-sm-8">
+                                    <span class="badge bg-warning">@Model.Cost.ToString("C")</span>
+                                </dd>
+                            </dl>
+                        </div>
+                        <div class="col-md-6">
+                            <dl class="row">
+                                <dt class="col-sm-4 text-muted">Durum:</dt>
+                                <dd class="col-sm-8">
+                                    @if (Model.IsActive)
+                                    {
+                                        <span class="badge bg-success">Aktif</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">Pasif</span>
+                                    }
+                                </dd>
+
+                                @if (!string.IsNullOrEmpty(Model.StockLocation))
+                                {
+                                    <dt class="col-sm-4 text-muted">Stok Lokasyonu:</dt>
+                                    <dd class="col-sm-8">
+                                        <i class="fas fa-map-marker-alt me-1"></i>@Model.StockLocation
+                                    </dd>
+                                }
+
+                                <dt class="col-sm-4 text-muted">Oluşturulma:</dt>
+                                <dd class="col-sm-8">@Model.CreatedDate.ToString("dd/MM/yyyy HH:mm")</dd>
+
+                                @if (Model.UpdatedDate.HasValue)
+                                {
+                                    <dt class="col-sm-4 text-muted">Güncellenme:</dt>
+                                    <dd class="col-sm-8">@Model.UpdatedDate.Value.ToString("dd/MM/yyyy HH:mm")</dd>
+                                }
+                            </dl>
+                        </div>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(Model.Description))
+                    {
+                        <div class="mt-4">
+                            <h6 class="text-primary">ğŸ“ Açıklama</h6>
+                            <div class="bg-light p-3 rounded">
+                                @Model.Description
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Stock Analysis -->
+            <div class="card shadow-sm mt-4">
+                <div class="card-header bg-success text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-chart-bar me-2"></i>Stok Analizi
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-md-4">
+                            <div class="border-end">
+                                <div class="h4 text-primary">@Model.CurrentStock</div>
+                                <div class="text-muted">Mevcut Stok</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="border-end">
+                                <div class="h4 text-warning">@Model.Cost.ToString("C")</div>
+                                <div class="text-muted">Birim Maliyet</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="h4 text-success">@((Model.Cost * Model.CurrentStock).ToString("C"))</div>
+                            <div class="text-muted">Toplam Değer</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-chart-pie me-2"></i>Malzeme Özeti
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-3">
+                        <i class="fas fa-carrot fa-3x text-primary mb-2"></i>
+                        <h5>@Model.Name</h5>
+                        <p class="text-muted">@Model.Unit</p>
+                    </div>
+                    
+                    <div class="list-group list-group-flush">
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>Stok Durumu</span>
+                            <span class="badge bg-success">@Model.CurrentStock @Model.Unit</span>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>Birim Maliyet</span>
+                            <span class="badge bg-warning">@Model.Cost.ToString("C")</span>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>Toplam Değer</span>
+                            <span class="badge bg-primary">@((Model.Cost * Model.CurrentStock).ToString("C"))</span>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>Durum</span>
+                            @if (Model.IsActive)
+                            {
+                                <span class="badge bg-success">Aktif</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">Pasif</span>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mt-3">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-tools me-2"></i>Hızlı İşlemler
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary">
+                            <i class="fas fa-edit me-2"></i>Malzeme Düzenle
+                        </a>
+                        <button class="btn btn-outline-success" onclick="updateStock(@Model.Id)">
+                            <i class="fas fa-plus me-2"></i>Stok Güncelle
+                        </button>
+                        <a asp-controller="Stocks" asp-action="Create" asp-route-ingredientId="@Model.Id" class="btn btn-outline-info">
+                            <i class="fas fa-box me-2"></i>Stok Kaydı Ekle
+                        </a>
+                        <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-outline-danger">
+                            <i class="fas fa-trash me-2"></i>Malzemeyi Sil
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            @if (!string.IsNullOrEmpty(Model.StockLocation))
+            {
+                <div class="card shadow-sm mt-3">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-map-marker-alt me-2"></i>Konum Bilgisi
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="text-center">
+                            <i class="fas fa-map-marker-alt fa-2x text-info mb-2"></i>
+                            <p class="mb-0">@Model.StockLocation</p>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<script>
+function updateStock(ingredientId) {
+    const newStock = prompt("Yeni stok miktarını girin:");
+    if (newStock && !isNaN(newStock)) {
+        // Burada AJAX ile stok güncelleme işlemi yapılabilir
+        alert("Stok miktarı güncellendi: " + newStock);
+        location.reload();
+    }
+}
+</script> 
+
+

@@ -19,15 +19,15 @@ namespace SD_Restaurant.Web.Controllers
         public async Task<IActionResult> Index()
         {
             var httpClient = _httpClientFactory.CreateClient("ApiClient");
-            var response = await httpClient.GetAsync("api/reservations");
+            var response = await httpClient.GetAsync("reservations");
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                var reservations = JsonSerializer.Deserialize<List<ReservationViewModel>>(content, new JsonSerializerOptions
+                var apiResponse = JsonSerializer.Deserialize<ApiResponse<List<ReservationViewModel>>>(content, new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
                 });
-                return View(reservations);
+                return View(apiResponse?.Data ?? new List<ReservationViewModel>());
             }
             return View(new List<ReservationViewModel>());
         }
@@ -35,16 +35,16 @@ namespace SD_Restaurant.Web.Controllers
         public async Task<IActionResult> ByDate(DateTime date)
         {
             var httpClient = _httpClientFactory.CreateClient("ApiClient");
-            var response = await httpClient.GetAsync($"api/reservations/date/{date:yyyy-MM-dd}");
+            var response = await httpClient.GetAsync($"reservations/date/{date:yyyy-MM-dd}");
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                var reservations = JsonSerializer.Deserialize<List<ReservationViewModel>>(content, new JsonSerializerOptions
+                var apiResponse = JsonSerializer.Deserialize<ApiResponse<List<ReservationViewModel>>>(content, new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
                 });
                 ViewBag.Date = date;
-                return View("Index", reservations);
+                return View("Index", apiResponse?.Data ?? new List<ReservationViewModel>());
             }
             return View("Index", new List<ReservationViewModel>());
         }
@@ -52,16 +52,16 @@ namespace SD_Restaurant.Web.Controllers
         public async Task<IActionResult> ByTable(int tableId)
         {
             var httpClient = _httpClientFactory.CreateClient("ApiClient");
-            var response = await httpClient.GetAsync($"api/reservations/table/{tableId}");
+            var response = await httpClient.GetAsync($"reservations/table/{tableId}");
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                var reservations = JsonSerializer.Deserialize<List<ReservationViewModel>>(content, new JsonSerializerOptions
+                var apiResponse = JsonSerializer.Deserialize<ApiResponse<List<ReservationViewModel>>>(content, new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
                 });
                 ViewBag.TableId = tableId;
-                return View("Index", reservations);
+                return View("Index", apiResponse?.Data ?? new List<ReservationViewModel>());
             }
             return View("Index", new List<ReservationViewModel>());
         }
@@ -79,7 +79,7 @@ namespace SD_Restaurant.Web.Controllers
                 var httpClient = _httpClientFactory.CreateClient("ApiClient");
                 var json = JsonSerializer.Serialize(reservation);
                 var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-                var response = await httpClient.PostAsync("api/reservations", content);
+                var response = await httpClient.PostAsync("reservations", content);
                 
                 if (response.IsSuccessStatusCode)
                 {
@@ -92,15 +92,15 @@ namespace SD_Restaurant.Web.Controllers
         public async Task<IActionResult> Edit(int id)
         {
             var httpClient = _httpClientFactory.CreateClient("ApiClient");
-            var response = await httpClient.GetAsync($"api/reservations/{id}");
+            var response = await httpClient.GetAsync($"reservations/{id}");
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                var reservation = JsonSerializer.Deserialize<ReservationViewModel>(content, new JsonSerializerOptions
+                var apiResponse = JsonSerializer.Deserialize<ApiResponse<ReservationViewModel>>(content, new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
                 });
-                return View(reservation);
+                return View(apiResponse?.Data);
             }
             return NotFound();
         }
@@ -113,7 +113,7 @@ namespace SD_Restaurant.Web.Controllers
                 var httpClient = _httpClientFactory.CreateClient("ApiClient");
                 var json = JsonSerializer.Serialize(reservation);
                 var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-                var response = await httpClient.PutAsync($"api/reservations/{id}", content);
+                var response = await httpClient.PutAsync($"reservations/{id}", content);
                 if (response.IsSuccessStatusCode)
                 {
                     return RedirectToAction(nameof(Index));
@@ -125,15 +125,15 @@ namespace SD_Restaurant.Web.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             var httpClient = _httpClientFactory.CreateClient("ApiClient");
-            var response = await httpClient.GetAsync($"api/reservations/{id}");
+            var response = await httpClient.GetAsync($"reservations/{id}");
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                var reservation = JsonSerializer.Deserialize<ReservationViewModel>(content, new JsonSerializerOptions
+                var apiResponse = JsonSerializer.Deserialize<ApiResponse<ReservationViewModel>>(content, new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
                 });
-                return View(reservation);
+                return View(apiResponse?.Data);
             }
             return NotFound();
         }
@@ -142,7 +142,7 @@ namespace SD_Restaurant.Web.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var httpClient = _httpClientFactory.CreateClient("ApiClient");
-            var response = await httpClient.DeleteAsync($"api/reservations/{id}");
+            var response = await httpClient.DeleteAsync($"reservations/{id}");
             if (response.IsSuccessStatusCode)
             {
                 return RedirectToAction(nameof(Index));
@@ -153,15 +153,15 @@ namespace SD_Restaurant.Web.Controllers
         public async Task<IActionResult> Details(int id)
         {
             var httpClient = _httpClientFactory.CreateClient("ApiClient");
-            var response = await httpClient.GetAsync($"api/reservations/{id}");
+            var response = await httpClient.GetAsync($"reservations/{id}");
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                var reservation = JsonSerializer.Deserialize<ReservationViewModel>(content, new JsonSerializerOptions
+                var apiResponse = JsonSerializer.Deserialize<ApiResponse<ReservationViewModel>>(content, new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
                 });
-                return View(reservation);
+                return View(apiResponse?.Data);
             }
             return NotFound();
         }

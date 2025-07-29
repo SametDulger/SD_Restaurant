@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using SD_Restaurant.Core.Enums;
 
 namespace SD_Restaurant.Core.Entities
 {
@@ -26,7 +27,7 @@ namespace SD_Restaurant.Core.Entities
         
         public int GuestCount { get; set; }
         
-        public string? Status { get; set; } // Onaylandı, Beklemede, İptal
+        public ReservationStatus Status { get; set; } = ReservationStatus.Pending;
         
         [MaxLength(500)]
         public string? SpecialRequests { get; set; }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using SD_Restaurant.Core.Enums;
 
 namespace SD_Restaurant.Application.DTOs
 {
@@ -16,7 +17,7 @@ namespace SD_Restaurant.Application.DTOs
         public string? EmployeeName { get; set; }
         public DateTime OrderDate { get; set; }
         public DateTime? CompletedDate { get; set; }
-        public string? Status { get; set; }
+        public OrderStatus Status { get; set; }
         public decimal TotalAmount { get; set; }
         public decimal TaxAmount { get; set; }
         public decimal DiscountAmount { get; set; }

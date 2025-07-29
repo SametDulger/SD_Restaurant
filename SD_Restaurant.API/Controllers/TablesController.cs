@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SD_Restaurant.Application.DTOs;
 using SD_Restaurant.Application.Services;
+using SD_Restaurant.Core.Enums;
 
 namespace SD_Restaurant.API.Controllers
 {
@@ -18,93 +19,99 @@ namespace SD_Restaurant.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TableDto>>> GetTables()
+        public async Task<ActionResult<ApiResponse<IEnumerable<TableDto>>>> GetTables()
         {
             var tables = await _tableService.GetAllTablesAsync();
-            return Ok(tables);
+            return Ok(ApiResponse<IEnumerable<TableDto>>.SuccessResult(tables, "Masalar başarıyla getirildi"));
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<TableDto>> GetTable(int id)
+        public async Task<ActionResult<ApiResponse<TableDto>>> GetTable(int id)
         {
             var table = await _tableService.GetTableByIdAsync(id);
             if (table == null)
             {
-                return NotFound();
+                return NotFound(ApiResponse<TableDto>.ErrorResult("Masa bulunamadı"));
             }
-            return Ok(table);
+            return Ok(ApiResponse<TableDto>.SuccessResult(table, "Masa başarıyla getirildi"));
         }
 
         [HttpGet("status/{status}")]
-        public async Task<ActionResult<IEnumerable<TableDto>>> GetTablesByStatus(string status)
+        public async Task<ActionResult<ApiResponse<IEnumerable<TableDto>>>> GetTablesByStatus(string status)
         {
-            var tables = await _tableService.GetTablesByStatusAsync(status);
-            return Ok(tables);
+            if (Enum.TryParse<TableStatus>(status, true, out var tableStatus))
+            {
+                var tables = await _tableService.GetTablesByStatusAsync(tableStatus);
+                return Ok(ApiResponse<IEnumerable<TableDto>>.SuccessResult(tables, "Durum bazlı masalar getirildi"));
+            }
+            return BadRequest(ApiResponse<IEnumerable<TableDto>>.ErrorResult("Geçersiz durum değeri"));
         }
 
         [HttpGet("location/{location}")]
-        public async Task<ActionResult<IEnumerable<TableDto>>> GetTablesByLocation(string location)
+        public async Task<ActionResult<ApiResponse<IEnumerable<TableDto>>>> GetTablesByLocation(string location)
         {
             var tables = await _tableService.GetTablesByLocationAsync(location);
-            return Ok(tables);
+            return Ok(ApiResponse<IEnumerable<TableDto>>.SuccessResult(tables, "Konum bazlı masalar getirildi"));
         }
 
         [HttpPost]
-        public async Task<ActionResult<TableDto>> CreateTable(CreateTableDto createTableDto)
+        public async Task<ActionResult<ApiResponse<TableDto>>> CreateTable(CreateTableDto createTableDto)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(ApiResponse<TableDto>.ErrorResult("Geçersiz veri", GetModelStateErrors()));
             }
 
             var createdTable = await _tableService.CreateTableAsync(createTableDto);
-            return CreatedAtAction(nameof(GetTable), new { id = createdTable.Id }, createdTable);
+            return CreatedAtAction(nameof(GetTable), new { id = createdTable.Id }, 
+                ApiResponse<TableDto>.SuccessResult(createdTable, "Masa başarıyla oluşturuldu"));
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateTable(int id, UpdateTableDto updateTableDto)
+        public async Task<ActionResult<ApiResponse<object>>> UpdateTable(int id, UpdateTableDto updateTableDto)
         {
             if (id != updateTableDto.Id)
             {
-                return BadRequest();
+                return BadRequest(ApiResponse<object>.ErrorResult("ID uyumsuzluğu"));
             }
 
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(ApiResponse<object>.ErrorResult("Geçersiz veri", GetModelStateErrors()));
             }
 
             var result = await _tableService.UpdateTableAsync(updateTableDto);
             if (!result)
             {
-                return NotFound();
+                return NotFound(ApiResponse<object>.ErrorResult("Masa bulunamadı"));
             }
 
-            return NoContent();
+            return Ok(ApiResponse<object>.SuccessResult(new object(), "Masa başarıyla güncellendi"));
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTable(int id)
+        public async Task<ActionResult<ApiResponse<object>>> DeleteTable(int id)
         {
             var result = await _tableService.DeleteTableAsync(id);
             if (!result)
             {
-                return NotFound();
+                return NotFound(ApiResponse<object>.ErrorResult("Masa bulunamadı"));
             }
 
-            return NoContent();
+            return Ok(ApiResponse<object>.SuccessResult(new object(), "Masa başarıyla silindi"));
         }
 
-        [HttpPut("{id}/status")]
-        public async Task<IActionResult> UpdateTableStatus(int id, [FromBody] string status)
+        private List<string> GetModelStateErrors()
         {
-            var result = await _tableService.UpdateTableStatusAsync(id, status);
-            if (!result)
+            var errors = new List<string>();
+            foreach (var modelState in ModelState.Values)
             {
-                return NotFound();
+                foreach (var error in modelState.Errors)
+                {
+                    errors.Add(error.ErrorMessage);
+                }
             }
-
-            return NoContent();
+            return errors;
         }
     }
 } 

@@ -19,7 +19,6 @@ namespace SD_Restaurant.Web.Models
         [Range(1, 20, ErrorMessage = "Kişi sayısı 1-20 arasında olmalıdır")]
         public int NumberOfGuests { get; set; }
 
-        [StringLength(50, ErrorMessage = "Durum en fazla 50 karakter olabilir")]
         public string? Status { get; set; }
 
         [StringLength(500, ErrorMessage = "Notlar en fazla 500 karakter olabilir")]

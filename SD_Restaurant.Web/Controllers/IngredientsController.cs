@@ -1,0 +1,167 @@
+using Microsoft.AspNetCore.Mvc;
+using SD_Restaurant.Web.Models;
+using System;
+using System.Collections.Generic;
+using System.Net.Http;
+using System.Threading.Tasks;
+using System.Text.Json;
+
+namespace SD_Restaurant.Web.Controllers
+{
+    public class IngredientsController : Controller
+    {
+        private readonly IHttpClientFactory _httpClientFactory;
+
+        public IngredientsController(IHttpClientFactory httpClientFactory)
+        {
+            _httpClientFactory = httpClientFactory;
+        }
+
+        public async Task<IActionResult> Index()
+        {
+            var httpClient = _httpClientFactory.CreateClient("ApiClient");
+            var response = await httpClient.GetAsync("ingredients");
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                var apiResponse = JsonSerializer.Deserialize<ApiResponse<List<IngredientViewModel>>>(content, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+                return View(apiResponse?.Data ?? new List<IngredientViewModel>());
+            }
+            return View(new List<IngredientViewModel>());
+        }
+
+        public async Task<IActionResult> Search(string term)
+        {
+            if (string.IsNullOrWhiteSpace(term))
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            var httpClient = _httpClientFactory.CreateClient("ApiClient");
+            var response = await httpClient.GetAsync($"ingredients/search?term={Uri.EscapeDataString(term)}");
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                var apiResponse = JsonSerializer.Deserialize<ApiResponse<List<IngredientViewModel>>>(content, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+                ViewBag.SearchTerm = term;
+                return View("Index", apiResponse?.Data ?? new List<IngredientViewModel>());
+            }
+            return View("Index", new List<IngredientViewModel>());
+        }
+
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create(IngredientViewModel ingredient)
+        {
+            if (ModelState.IsValid)
+            {
+                var httpClient = _httpClientFactory.CreateClient("ApiClient");
+                var json = JsonSerializer.Serialize(ingredient);
+                var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+                var response = await httpClient.PostAsync("ingredients", content);
+                
+                if (response.IsSuccessStatusCode)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+            return View(ingredient);
+        }
+
+        public async Task<IActionResult> Edit(int id)
+        {
+            var httpClient = _httpClientFactory.CreateClient("ApiClient");
+            var response = await httpClient.GetAsync($"ingredients/{id}");
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                var apiResponse = JsonSerializer.Deserialize<ApiResponse<IngredientViewModel>>(content, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+                return View(apiResponse?.Data);
+            }
+            return NotFound();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(int id, IngredientViewModel ingredient)
+        {
+            if (ModelState.IsValid)
+            {
+                var httpClient = _httpClientFactory.CreateClient("ApiClient");
+                var json = JsonSerializer.Serialize(ingredient);
+                var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+                var response = await httpClient.PutAsync($"ingredients/{id}", content);
+                if (response.IsSuccessStatusCode)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+            return View(ingredient);
+        }
+
+        public async Task<IActionResult> Delete(int id)
+        {
+            var httpClient = _httpClientFactory.CreateClient("ApiClient");
+            var response = await httpClient.GetAsync($"ingredients/{id}");
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                var apiResponse = JsonSerializer.Deserialize<ApiResponse<IngredientViewModel>>(content, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+                return View(apiResponse?.Data);
+            }
+            return NotFound();
+        }
+
+        [HttpPost, ActionName("Delete")]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var httpClient = _httpClientFactory.CreateClient("ApiClient");
+            var response = await httpClient.DeleteAsync($"ingredients/{id}");
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            return NotFound();
+        }
+
+        public async Task<IActionResult> Details(int id)
+        {
+            var httpClient = _httpClientFactory.CreateClient("ApiClient");
+            var response = await httpClient.GetAsync($"ingredients/{id}");
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                var apiResponse = JsonSerializer.Deserialize<ApiResponse<IngredientViewModel>>(content, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+                return View(apiResponse?.Data);
+            }
+            return NotFound();
+        }
+    }
+
+    public class ApiResponse<T>
+    {
+        public bool Success { get; set; }
+        public string Message { get; set; } = string.Empty;
+        public T? Data { get; set; }
+        public List<string> Errors { get; set; } = new List<string>();
+        public DateTime Timestamp { get; set; }
+    }
+} 

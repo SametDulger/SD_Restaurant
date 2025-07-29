@@ -26,8 +26,8 @@ namespace SD_Restaurant.Infrastructure.Repositories
         {
             return await _context.Payments
                 .Include(p => p.Order)
-                .ThenInclude(o => o.Customer)
-                .Where(p => p.Order != null && p.Order.CustomerId == customerId)
+                .ThenInclude(o => o!.Customer)
+                .Where(p => p.Order!.CustomerId == customerId)
                 .ToListAsync();
         }
 
@@ -43,7 +43,7 @@ namespace SD_Restaurant.Infrastructure.Repositories
         {
             return await _context.Payments
                 .Include(p => p.Order)
-                .Where(p => p.PaymentMethod == paymentMethod)
+                .Where(p => p.PaymentMethod.ToString() == paymentMethod)
                 .ToListAsync();
         }
 

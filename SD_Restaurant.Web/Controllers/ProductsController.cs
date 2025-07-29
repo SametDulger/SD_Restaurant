@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using SD_Restaurant.Web.Models;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -19,15 +20,15 @@ namespace SD_Restaurant.Web.Controllers
         public async Task<IActionResult> Index()
         {
             var httpClient = _httpClientFactory.CreateClient("ApiClient");
-            var response = await httpClient.GetAsync("api/products");
+            var response = await httpClient.GetAsync("products");
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                var products = JsonSerializer.Deserialize<List<ProductViewModel>>(content, new JsonSerializerOptions
+                var apiResponse = JsonSerializer.Deserialize<ApiResponse<List<ProductViewModel>>>(content, new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
                 });
-                return View(products);
+                return View(apiResponse?.Data ?? new List<ProductViewModel>());
             }
             return View(new List<ProductViewModel>());
         }
@@ -40,16 +41,16 @@ namespace SD_Restaurant.Web.Controllers
             }
 
             var httpClient = _httpClientFactory.CreateClient("ApiClient");
-            var response = await httpClient.GetAsync($"api/products/search?term={Uri.EscapeDataString(term)}");
+            var response = await httpClient.GetAsync($"products/search?term={Uri.EscapeDataString(term)}");
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                var products = JsonSerializer.Deserialize<List<ProductViewModel>>(content, new JsonSerializerOptions
+                var apiResponse = JsonSerializer.Deserialize<ApiResponse<List<ProductViewModel>>>(content, new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
                 });
                 ViewBag.SearchTerm = term;
-                return View("Index", products);
+                return View("Index", apiResponse?.Data ?? new List<ProductViewModel>());
             }
             return View("Index", new List<ProductViewModel>());
         }
@@ -57,16 +58,16 @@ namespace SD_Restaurant.Web.Controllers
         public async Task<IActionResult> LowStock()
         {
             var httpClient = _httpClientFactory.CreateClient("ApiClient");
-            var response = await httpClient.GetAsync("api/products/low-stock");
+            var response = await httpClient.GetAsync("products/low-stock");
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                var products = JsonSerializer.Deserialize<List<ProductViewModel>>(content, new JsonSerializerOptions
+                var apiResponse = JsonSerializer.Deserialize<ApiResponse<List<ProductViewModel>>>(content, new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
                 });
                 ViewBag.Title = "Düşük Stok Ürünleri";
-                return View("Index", products);
+                return View("Index", apiResponse?.Data ?? new List<ProductViewModel>());
             }
             return View("Index", new List<ProductViewModel>());
         }
@@ -74,15 +75,15 @@ namespace SD_Restaurant.Web.Controllers
         public async Task<IActionResult> ByCategory(int categoryId)
         {
             var httpClient = _httpClientFactory.CreateClient("ApiClient");
-            var response = await httpClient.GetAsync($"api/products/category/{categoryId}");
+            var response = await httpClient.GetAsync($"products/category/{categoryId}");
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                var products = JsonSerializer.Deserialize<List<ProductViewModel>>(content, new JsonSerializerOptions
+                var apiResponse = JsonSerializer.Deserialize<ApiResponse<List<ProductViewModel>>>(content, new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
                 });
-                return View("Index", products);
+                return View("Index", apiResponse?.Data ?? new List<ProductViewModel>());
             }
             return View("Index", new List<ProductViewModel>());
         }
@@ -100,7 +101,7 @@ namespace SD_Restaurant.Web.Controllers
                 var httpClient = _httpClientFactory.CreateClient("ApiClient");
                 var json = JsonSerializer.Serialize(product);
                 var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-                var response = await httpClient.PostAsync("api/products", content);
+                var response = await httpClient.PostAsync("products", content);
                 if (response.IsSuccessStatusCode)
                 {
                     return RedirectToAction(nameof(Index));
@@ -112,15 +113,15 @@ namespace SD_Restaurant.Web.Controllers
         public async Task<IActionResult> Edit(int id)
         {
             var httpClient = _httpClientFactory.CreateClient("ApiClient");
-            var response = await httpClient.GetAsync($"api/products/{id}");
+            var response = await httpClient.GetAsync($"products/{id}");
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                var product = JsonSerializer.Deserialize<ProductViewModel>(content, new JsonSerializerOptions
+                var apiResponse = JsonSerializer.Deserialize<ApiResponse<ProductViewModel>>(content, new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
                 });
-                return View(product);
+                return View(apiResponse?.Data);
             }
             return NotFound();
         }
@@ -133,7 +134,7 @@ namespace SD_Restaurant.Web.Controllers
                 var httpClient = _httpClientFactory.CreateClient("ApiClient");
                 var json = JsonSerializer.Serialize(product);
                 var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-                var response = await httpClient.PutAsync($"api/products/{id}", content);
+                var response = await httpClient.PutAsync($"products/{id}", content);
                 if (response.IsSuccessStatusCode)
                 {
                     return RedirectToAction(nameof(Index));
@@ -145,15 +146,15 @@ namespace SD_Restaurant.Web.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             var httpClient = _httpClientFactory.CreateClient("ApiClient");
-            var response = await httpClient.GetAsync($"api/products/{id}");
+            var response = await httpClient.GetAsync($"products/{id}");
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                var product = JsonSerializer.Deserialize<ProductViewModel>(content, new JsonSerializerOptions
+                var apiResponse = JsonSerializer.Deserialize<ApiResponse<ProductViewModel>>(content, new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
                 });
-                return View(product);
+                return View(apiResponse?.Data);
             }
             return NotFound();
         }
@@ -162,7 +163,7 @@ namespace SD_Restaurant.Web.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var httpClient = _httpClientFactory.CreateClient("ApiClient");
-            var response = await httpClient.DeleteAsync($"api/products/{id}");
+            var response = await httpClient.DeleteAsync($"products/{id}");
             if (response.IsSuccessStatusCode)
             {
                 return RedirectToAction(nameof(Index));
@@ -173,15 +174,15 @@ namespace SD_Restaurant.Web.Controllers
         public async Task<IActionResult> Details(int id)
         {
             var httpClient = _httpClientFactory.CreateClient("ApiClient");
-            var response = await httpClient.GetAsync($"api/products/{id}");
+            var response = await httpClient.GetAsync($"products/{id}");
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                var product = JsonSerializer.Deserialize<ProductViewModel>(content, new JsonSerializerOptions
+                var apiResponse = JsonSerializer.Deserialize<ApiResponse<ProductViewModel>>(content, new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
                 });
-                return View(product);
+                return View(apiResponse?.Data);
             }
             return NotFound();
         }

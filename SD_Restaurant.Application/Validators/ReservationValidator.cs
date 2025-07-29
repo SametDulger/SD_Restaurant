@@ -18,7 +18,7 @@ namespace SD_Restaurant.Application.Validators
                 .MaximumLength(20).WithMessage("Telefon en fazla 20 karakter olabilir");
 
             RuleFor(x => x.ReservationDate)
-                .GreaterThan(DateTime.Today).WithMessage("Rezervasyon tarihi bugünden sonra olmalıdır");
+                .GreaterThan(DateTime.UtcNow.Date).WithMessage("Rezervasyon tarihi bugünden sonra olmalıdır");
 
             RuleFor(x => x.GuestCount)
                 .InclusiveBetween(1, 20).WithMessage("Misafir sayısı 1-20 arasında olmalıdır");
@@ -40,7 +40,7 @@ namespace SD_Restaurant.Application.Validators
                 .MaximumLength(20).WithMessage("Telefon en fazla 20 karakter olabilir");
 
             RuleFor(x => x.ReservationDate)
-                .GreaterThan(DateTime.Today).WithMessage("Rezervasyon tarihi bugünden sonra olmalıdır");
+                .GreaterThan(DateTime.UtcNow.Date).WithMessage("Rezervasyon tarihi bugünden sonra olmalıdır");
 
             RuleFor(x => x.GuestCount)
                 .InclusiveBetween(1, 20).WithMessage("Misafir sayısı 1-20 arasında olmalıdır");

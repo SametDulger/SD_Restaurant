@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using SD_Restaurant.Core.Enums;
 
 namespace SD_Restaurant.Core.Entities
 {
@@ -21,7 +22,7 @@ namespace SD_Restaurant.Core.Entities
         public DateTime OrderDate { get; set; }
         public DateTime? CompletedDate { get; set; }
         
-        public string? Status { get; set; } // Beklemede, Hazırlanıyor, Tamamlandı, İptal
+        public OrderStatus Status { get; set; } = OrderStatus.Pending;
         
         public decimal TotalAmount { get; set; }
         public decimal TaxAmount { get; set; }

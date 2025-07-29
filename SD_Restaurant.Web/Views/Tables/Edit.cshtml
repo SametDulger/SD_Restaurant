@@ -1,50 +1,252 @@
-@model SD_Restaurant.Web.Models.TableViewModel
+﻿@model SD_Restaurant.Web.Models.TableViewModel
 
 @{
     ViewData["Title"] = "Masa Düzenle";
 }
 
-<div class="container-fluid">
-    <div class="row">
+<div class="container-fluid fade-in">
+    <div class="row mb-4">
         <div class="col-12">
-            <div class="card">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="h3 mb-0 text-gradient">
+                        <i class="fas fa-edit me-2"></i>Masa Düzenle
+                    </h1>
+                    <p class="text-muted mb-0">Masa @Model.TableNumber bilgilerini güncelleyin</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-info">
+                        <i class="fas fa-eye me-2"></i>Detaylar
+                    </a>
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Geri Dön
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-xl-6">
+            <div class="card shadow-hover">
                 <div class="card-header">
-                    <h3 class="card-title">Masa Düzenle</h3>
+                    <h5 class="mb-0">
+                        <i class="fas fa-chair me-2"></i>Masa Bilgileri
+                    </h5>
                 </div>
                 <div class="card-body">
-                    <form asp-action="Edit">
-                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <form asp-action="Edit" id="editTableForm">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            Lütfen aşağıdaki hataları düzeltin:
+                        </div>
+                        
                         <input type="hidden" asp-for="Id" />
                         
-                        <div class="form-group">
-                            <label asp-for="TableNumber" class="control-label">Masa Numarası</label>
-                            <input asp-for="TableNumber" class="form-control" />
-                            <span asp-validation-for="TableNumber" class="text-danger"></span>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="TableNumber" class="form-label">
+                                        <i class="fas fa-hashtag me-1"></i>Masa Numarası
+                                    </label>
+                                    <input asp-for="TableNumber" class="form-control" 
+                                           placeholder="Örn: M1, M2, VIP1" 
+                                           data-bs-toggle="tooltip" 
+                                           title="Masa numarasını girin (örn: M1, M2, VIP1)">
+                                    <span asp-validation-for="TableNumber" class="invalid-feedback"></span>
+                                    <small class="form-text text-muted">
+                                        <i class="fas fa-info-circle me-1"></i>Benzersiz bir masa numarası girin
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="Capacity" class="form-label">
+                                        <i class="fas fa-users me-1"></i>Kapasite
+                                    </label>
+                                    <input asp-for="Capacity" class="form-control" 
+                                           type="number" min="1" max="20" 
+                                           placeholder="Kişi sayısı"
+                                           data-bs-toggle="tooltip" 
+                                           title="Masanın kaç kişilik olduğunu belirtin">
+                                    <span asp-validation-for="Capacity" class="invalid-feedback"></span>
+                                    <small class="form-text text-muted">
+                                        <i class="fas fa-info-circle me-1"></i>1-20 kişi arası
+                                    </small>
+                                </div>
+                            </div>
                         </div>
                         
-                        <div class="form-group">
-                            <label asp-for="Capacity" class="control-label">Kapasite</label>
-                            <input asp-for="Capacity" class="form-control" />
-                            <span asp-validation-for="Capacity" class="text-danger"></span>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="Status" class="form-label">
+                                        <i class="fas fa-info-circle me-1"></i>Durum
+                                    </label>
+                                    <select asp-for="Status" class="form-select" 
+                                            data-bs-toggle="tooltip" 
+                                            title="Masanın mevcut durumunu seçin">
+                                        <option value="">Durum Seçin</option>
+                                        <option value="Available">Boş</option>
+                                        <option value="Occupied">Dolu</option>
+                                        <option value="Reserved">Rezerve</option>
+                                        <option value="Maintenance">Bakım</option>
+                                    </select>
+                                    <span asp-validation-for="Status" class="invalid-feedback"></span>
+                                    <small class="form-text text-muted">
+                                        <i class="fas fa-info-circle me-1"></i>Masanın mevcut durumu
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="Location" class="form-label">
+                                        <i class="fas fa-map-marker-alt me-1"></i>Konum
+                                    </label>
+                                    <input asp-for="Location" class="form-control" 
+                                           placeholder="Örn: Bahçe, İç Mekan, VIP"
+                                           data-bs-toggle="tooltip" 
+                                           title="Masanın bulunduğu konumu belirtin">
+                                    <span asp-validation-for="Location" class="invalid-feedback"></span>
+                                    <small class="form-text text-muted">
+                                        <i class="fas fa-info-circle me-1"></i>Masanın bulunduğu alan
+                                    </small>
+                                </div>
+                            </div>
                         </div>
                         
-                        <div class="form-group">
-                            <label asp-for="Status" class="control-label">Durum</label>
-                            <input asp-for="Status" class="form-control" />
-                            <span asp-validation-for="Status" class="text-danger"></span>
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input asp-for="IsAvailable" class="form-check-input" type="checkbox" id="isAvailable">
+                                <label class="form-check-label" for="isAvailable">
+                                    <i class="fas fa-check-circle me-1"></i>Masa müsait
+                                </label>
+                                <small class="form-text text-muted d-block">
+                                    <i class="fas fa-info-circle me-1"></i>Bu seçenek işaretliyse masa rezervasyon için müsait
+                                </small>
+                            </div>
                         </div>
                         
-                        <div class="form-group">
-                            <label asp-for="Location" class="control-label">Konum</label>
-                            <input asp-for="Location" class="form-control" />
-                            <span asp-validation-for="Location" class="text-danger"></span>
-                        </div>
+                        <hr class="my-4">
                         
-                        <div class="form-group">
-                            <input type="submit" value="Güncelle" class="btn btn-primary" />
-                            <a asp-action="Index" class="btn btn-secondary">Geri Dön</a>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="fas fa-save me-2"></i>Değişiklikleri Kaydet
+                                </button>
+                                <button type="reset" class="btn btn-outline-secondary ms-2">
+                                    <i class="fas fa-undo me-2"></i>Değişiklikleri Geri Al
+                                </button>
+                            </div>
+                            <a asp-action="Index" class="btn btn-outline-secondary">
+                                <i class="fas fa-times me-2"></i>İptal
+                            </a>
                         </div>
                     </form>
+                </div>
+            </div>
+            
+            <!-- Current Status Card -->
+            <div class="card mt-4 border-primary">
+                <div class="card-header bg-primary text-white">
+                    <h6 class="mb-0">
+                        <i class="fas fa-info-circle me-2"></i>Mevcut Durum
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <dl class="row mb-0">
+                                <dt class="col-sm-4">Masa No:</dt>
+                                <dd class="col-sm-8"><strong>@Model.TableNumber</strong></dd>
+                                
+                                <dt class="col-sm-4">Kapasite:</dt>
+                                <dd class="col-sm-8">@Model.Capacity kişi</dd>
+                                
+                                <dt class="col-sm-4">Konum:</dt>
+                                <dd class="col-sm-8">@Model.Location</dd>
+                            </dl>
+                        </div>
+                        <div class="col-md-6">
+                            <dl class="row mb-0">
+                                <dt class="col-sm-4">Durum:</dt>
+                                <dd class="col-sm-8">
+                                    @{
+                                        var statusClass = Model.Status switch
+                                        {
+                                            "Available" => "badge-success",
+                                            "Occupied" => "badge-danger",
+                                            "Reserved" => "badge-warning",
+                                            "Maintenance" => "badge-secondary",
+                                            _ => "badge-secondary"
+                                        };
+                                        var statusText = Model.Status switch
+                                        {
+                                            "Available" => "Boş",
+                                            "Occupied" => "Dolu",
+                                            "Reserved" => "Rezerve",
+                                            "Maintenance" => "Bakım",
+                                            _ => Model.Status
+                                        };
+                                    }
+                                    <span class="badge @statusClass">@statusText</span>
+                                </dd>
+                                
+                                <dt class="col-sm-4">Müsaitlik:</dt>
+                                <dd class="col-sm-8">
+                                    @if (Model.IsAvailable)
+                                    {
+                                        <span class="badge bg-success">
+                                            <i class="fas fa-check me-1"></i>Müsait
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">
+                                            <i class="fas fa-times me-1"></i>Müsait Değil
+                                        </span>
+                                    }
+                                </dd>
+                                
+                                <dt class="col-sm-4">Son Güncelleme:</dt>
+                                <dd class="col-sm-8">@Model.UpdatedDate?.ToString("dd/MM/yyyy HH:mm") ?? "Henüz güncellenmemiş"</dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Help Card -->
+            <div class="card mt-4 border-info">
+                <div class="card-header bg-info text-white">
+                    <h6 class="mb-0">
+                        <i class="fas fa-question-circle me-2"></i>Yardım
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="text-info">
+                                <i class="fas fa-lightbulb me-1"></i>İpuçları:
+                            </h6>
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-check text-success me-2"></i>Masa numarası benzersiz olmalıdır</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Kapasite 1-20 kişi arası olmalıdır</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Konum bilgisi müşteriler için önemlidir</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-info">
+                                <i class="fas fa-cog me-1"></i>Durum Açıklamaları:
+                            </h6>
+                            <ul class="list-unstyled">
+                                <li><span class="badge bg-success me-2">Boş</span>Müşteri alabilir</li>
+                                <li><span class="badge bg-danger me-2">Dolu</span>Müşteri var</li>
+                                <li><span class="badge bg-warning me-2">Rezerve</span>Rezervasyon var</li>
+                                <li><span class="badge bg-secondary me-2">Bakım</span>Kullanılamaz</li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -53,4 +255,90 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        // Initialize tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+
+        // Form enhancement
+        document.getElementById('editTableForm').addEventListener('submit', function(e) {
+            const submitBtn = this.querySelector('button[type="submit"]');
+            SDRestaurant.showLoading(submitBtn);
+        });
+
+        // Real-time validation feedback
+        const formControls = document.querySelectorAll('.form-control, .form-select');
+        formControls.forEach(control => {
+            control.addEventListener('blur', function() {
+                validateField(this);
+            });
+            
+            control.addEventListener('input', function() {
+                if (this.classList.contains('is-invalid')) {
+                    validateField(this);
+                }
+            });
+        });
+
+        function validateField(field) {
+            const value = field.value.trim();
+            const isValid = value.length > 0;
+            
+            if (isValid) {
+                field.classList.remove('is-invalid');
+                field.classList.add('is-valid');
+            } else {
+                field.classList.remove('is-valid');
+                field.classList.add('is-invalid');
+            }
+        }
+
+        // Track changes
+        let hasChanges = false;
+        const form = document.getElementById('editTableForm');
+        const originalData = new FormData(form);
+        
+        form.addEventListener('input', function() {
+            const currentData = new FormData(form);
+            hasChanges = false;
+            
+            for (let [key, value] of currentData.entries()) {
+                if (originalData.get(key) !== value) {
+                    hasChanges = true;
+                    break;
+                }
+            }
+            
+            updateSaveButton();
+        });
+
+        function updateSaveButton() {
+            const saveBtn = form.querySelector('button[type="submit"]');
+            if (hasChanges) {
+                saveBtn.classList.remove('btn-outline-primary');
+                saveBtn.classList.add('btn-primary');
+                saveBtn.innerHTML = '<i class="fas fa-save me-2"></i>Değişiklikleri Kaydet';
+            } else {
+                saveBtn.classList.remove('btn-primary');
+                saveBtn.classList.add('btn-outline-primary');
+                saveBtn.innerHTML = '<i class="fas fa-check me-2"></i>Değişiklik Yok';
+            }
+        }
+
+        // Warn before leaving with unsaved changes
+        window.addEventListener('beforeunload', function(e) {
+            if (hasChanges) {
+                e.preventDefault();
+                e.returnValue = 'Kaydedilmemiş değişiklikleriniz var. Sayfadan ayrılmak istediğinizden emin misiniz?';
+            }
+        });
+
+        // Initialize on page load
+        updateSaveButton();
+    </script>
 } 
+
+

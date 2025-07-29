@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using SD_Restaurant.Web.Models;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -19,15 +20,15 @@ namespace SD_Restaurant.Web.Controllers
         public async Task<IActionResult> Index()
         {
             var httpClient = _httpClientFactory.CreateClient("ApiClient");
-            var response = await httpClient.GetAsync("api/tables");
+            var response = await httpClient.GetAsync("tables");
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                var tables = JsonSerializer.Deserialize<List<TableViewModel>>(content, new JsonSerializerOptions
+                var apiResponse = JsonSerializer.Deserialize<ApiResponse<List<TableViewModel>>>(content, new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
                 });
-                return View(tables);
+                return View(apiResponse?.Data ?? new List<TableViewModel>());
             }
             return View(new List<TableViewModel>());
         }
@@ -35,16 +36,16 @@ namespace SD_Restaurant.Web.Controllers
         public async Task<IActionResult> ByStatus(string status)
         {
             var httpClient = _httpClientFactory.CreateClient("ApiClient");
-            var response = await httpClient.GetAsync($"api/tables/status/{Uri.EscapeDataString(status)}");
+            var response = await httpClient.GetAsync($"tables/status/{Uri.EscapeDataString(status)}");
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                var tables = JsonSerializer.Deserialize<List<TableViewModel>>(content, new JsonSerializerOptions
+                var apiResponse = JsonSerializer.Deserialize<ApiResponse<List<TableViewModel>>>(content, new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
                 });
                 ViewBag.Status = status;
-                return View("Index", tables);
+                return View("Index", apiResponse?.Data ?? new List<TableViewModel>());
             }
             return View("Index", new List<TableViewModel>());
         }
@@ -52,7 +53,7 @@ namespace SD_Restaurant.Web.Controllers
         public async Task<IActionResult> ByLocation(string location)
         {
             var httpClient = _httpClientFactory.CreateClient("ApiClient");
-            var response = await httpClient.GetAsync($"api/tables/location/{Uri.EscapeDataString(location)}");
+            var response = await httpClient.GetAsync($"tables/location/{Uri.EscapeDataString(location)}");
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
@@ -79,7 +80,7 @@ namespace SD_Restaurant.Web.Controllers
                 var httpClient = _httpClientFactory.CreateClient("ApiClient");
                 var json = JsonSerializer.Serialize(table);
                 var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-                var response = await httpClient.PostAsync("api/tables", content);
+                var response = await httpClient.PostAsync("tables", content);
                 
                 if (response.IsSuccessStatusCode)
                 {
@@ -92,7 +93,7 @@ namespace SD_Restaurant.Web.Controllers
         public async Task<IActionResult> Edit(int id)
         {
             var httpClient = _httpClientFactory.CreateClient("ApiClient");
-            var response = await httpClient.GetAsync($"api/tables/{id}");
+            var response = await httpClient.GetAsync($"tables/{id}");
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
@@ -113,7 +114,7 @@ namespace SD_Restaurant.Web.Controllers
                 var httpClient = _httpClientFactory.CreateClient("ApiClient");
                 var json = JsonSerializer.Serialize(table);
                 var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-                var response = await httpClient.PutAsync($"api/tables/{id}", content);
+                var response = await httpClient.PutAsync($"tables/{id}", content);
                 if (response.IsSuccessStatusCode)
                 {
                     return RedirectToAction(nameof(Index));
@@ -125,7 +126,7 @@ namespace SD_Restaurant.Web.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             var httpClient = _httpClientFactory.CreateClient("ApiClient");
-            var response = await httpClient.GetAsync($"api/tables/{id}");
+            var response = await httpClient.GetAsync($"tables/{id}");
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
@@ -142,7 +143,7 @@ namespace SD_Restaurant.Web.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var httpClient = _httpClientFactory.CreateClient("ApiClient");
-            var response = await httpClient.DeleteAsync($"api/tables/{id}");
+            var response = await httpClient.DeleteAsync($"tables/{id}");
             if (response.IsSuccessStatusCode)
             {
                 return RedirectToAction(nameof(Index));
@@ -153,7 +154,7 @@ namespace SD_Restaurant.Web.Controllers
         public async Task<IActionResult> Details(int id)
         {
             var httpClient = _httpClientFactory.CreateClient("ApiClient");
-            var response = await httpClient.GetAsync($"api/tables/{id}");
+            var response = await httpClient.GetAsync($"tables/{id}");
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
@@ -171,7 +172,7 @@ namespace SD_Restaurant.Web.Controllers
         {
             var httpClient = _httpClientFactory.CreateClient("ApiClient");
             var content = new StringContent($"\"{status}\"", System.Text.Encoding.UTF8, "application/json");
-            var response = await httpClient.PutAsync($"api/tables/{id}/status", content);
+            var response = await httpClient.PutAsync($"tables/{id}/status", content);
             if (response.IsSuccessStatusCode)
             {
                 TempData["Message"] = "Masa durumu başarıyla güncellendi.";

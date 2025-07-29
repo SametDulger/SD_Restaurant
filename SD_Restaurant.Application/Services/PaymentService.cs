@@ -3,6 +3,7 @@ using SD_Restaurant.Application.DTOs;
 using SD_Restaurant.Core.Entities;
 using SD_Restaurant.Core.Repositories;
 using SD_Restaurant.Application.Services;
+using SD_Restaurant.Core.Enums;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -67,7 +68,7 @@ namespace SD_Restaurant.Application.Services
             return _mapper.Map<IEnumerable<PaymentDto>>(payments);
         }
 
-        public async Task<IEnumerable<PaymentDto>> GetPaymentsByMethodAsync(string paymentMethod)
+        public async Task<IEnumerable<PaymentDto>> GetPaymentsByMethodAsync(PaymentMethod paymentMethod)
         {
             var payments = await _paymentRepository.FindAsync(p => p.PaymentMethod == paymentMethod);
             return _mapper.Map<IEnumerable<PaymentDto>>(payments);

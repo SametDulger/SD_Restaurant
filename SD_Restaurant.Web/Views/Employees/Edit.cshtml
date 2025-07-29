@@ -1,4 +1,4 @@
-@model SD_Restaurant.Web.Models.EmployeeViewModel
+﻿@model SD_Restaurant.Web.Models.EmployeeViewModel
 
 @{
     ViewData["Title"] = "Çalışan Düzenle";
@@ -17,52 +17,52 @@
                         <input type="hidden" asp-for="Id" />
                         <div class="row">
                             <div class="col-md-6">
-                                <div class="form-group">
-                                    <label asp-for="FirstName" class="control-label">Ad</label>
+                                <div class="mb-3">
+                                    <label asp-for="FirstName" class="form-label">Ad</label>
                                     <input asp-for="FirstName" class="form-control" />
                                     <span asp-validation-for="FirstName" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <div class="form-group">
-                                    <label asp-for="LastName" class="control-label">Soyad</label>
+                                <div class="mb-3">
+                                    <label asp-for="LastName" class="form-label">Soyad</label>
                                     <input asp-for="LastName" class="form-control" />
                                     <span asp-validation-for="LastName" class="text-danger"></span>
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label asp-for="Position" class="control-label">Pozisyon</label>
+                        <div class="mb-3">
+                            <label asp-for="Position" class="form-label">Pozisyon</label>
                             <input asp-for="Position" class="form-control" />
                             <span asp-validation-for="Position" class="text-danger"></span>
                         </div>
                         <div class="row">
                             <div class="col-md-6">
-                                <div class="form-group">
-                                    <label asp-for="Email" class="control-label">E-posta</label>
+                                <div class="mb-3">
+                                    <label asp-for="Email" class="form-label">E-posta</label>
                                     <input asp-for="Email" class="form-control" />
                                     <span asp-validation-for="Email" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <div class="form-group">
-                                    <label asp-for="Phone" class="control-label">Telefon</label>
+                                <div class="mb-3">
+                                    <label asp-for="Phone" class="form-label">Telefon</label>
                                     <input asp-for="Phone" class="form-control" />
                                     <span asp-validation-for="Phone" class="text-danger"></span>
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label asp-for="Salary" class="control-label">Maaş</label>
+                        <div class="mb-3">
+                            <label asp-for="Salary" class="form-label">Maaş</label>
                             <input asp-for="Salary" class="form-control" />
                             <span asp-validation-for="Salary" class="text-danger"></span>
                         </div>
-                        <div class="form-group">
-                            <label asp-for="HireDate" class="control-label">İşe Başlama Tarihi</label>
+                        <div class="mb-3">
+                            <label asp-for="HireDate" class="form-label">İşe Başlama Tarihi</label>
                             <input asp-for="HireDate" class="form-control" type="date" />
                             <span asp-validation-for="HireDate" class="text-danger"></span>
                         </div>
-                        <div class="form-group">
+                        <div class="mb-3">
                             <input type="submit" value="Güncelle" class="btn btn-primary" />
                             <a asp-action="Index" class="btn btn-secondary">Geri Dön</a>
                         </div>
@@ -75,3 +75,5 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 } 
+
+

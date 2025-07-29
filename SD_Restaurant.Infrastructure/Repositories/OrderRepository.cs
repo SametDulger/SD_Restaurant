@@ -41,7 +41,7 @@ namespace SD_Restaurant.Infrastructure.Repositories
                 .Include(o => o.Table)
                 .Include(o => o.Customer)
                 .Include(o => o.Employee)
-                .Where(o => o.Status == status && o.IsActive)
+                .Where(o => o.Status.ToString() == status && o.IsActive)
                 .ToListAsync();
         }
 

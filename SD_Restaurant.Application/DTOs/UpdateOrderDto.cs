@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using SD_Restaurant.Core.Enums;
 
 namespace SD_Restaurant.Application.DTOs
 {
@@ -15,7 +16,7 @@ namespace SD_Restaurant.Application.DTOs
         public int CustomerId { get; set; }
 
         [Required]
-        public string Status { get; set; } = string.Empty;
+        public OrderStatus Status { get; set; }
 
         public string? SpecialInstructions { get; set; }
 
@@ -51,6 +52,6 @@ namespace SD_Restaurant.Application.DTOs
 
         public string? SpecialInstructions { get; set; }
 
-        public string Status { get; set; } = string.Empty;
+        public OrderStatus Status { get; set; }
     }
 } 

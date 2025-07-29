@@ -21,10 +21,18 @@ namespace SD_Restaurant.Infrastructure.Repositories
                 .FirstOrDefaultAsync(s => s.ProductId == productId && s.Location == location && s.IsActive);
         }
 
+        public async Task<Stock?> GetStockByIngredientAndLocationAsync(int ingredientId, string location)
+        {
+            return await _dbSet
+                .Include(s => s.Ingredient)
+                .FirstOrDefaultAsync(s => s.IngredientId == ingredientId && s.Location == location && s.IsActive);
+        }
+
         public async Task<IEnumerable<Stock>> GetStocksByLocationAsync(string location)
         {
             return await _dbSet
                 .Include(s => s.Product)
+                .Include(s => s.Ingredient)
                 .Where(s => s.Location == location && s.IsActive)
                 .ToListAsync();
         }
@@ -33,6 +41,7 @@ namespace SD_Restaurant.Infrastructure.Repositories
         {
             return await _dbSet
                 .Include(s => s.Product)
+                .Include(s => s.Ingredient)
                 .Where(s => s.Quantity <= s.MinimumStock && s.IsActive)
                 .ToListAsync();
         }
@@ -53,6 +62,14 @@ namespace SD_Restaurant.Infrastructure.Repositories
             return await _dbSet
                 .Include(s => s.Product)
                 .Where(s => s.ProductId == productId && s.IsActive)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Stock>> GetStocksByIngredientAsync(int ingredientId)
+        {
+            return await _dbSet
+                .Include(s => s.Ingredient)
+                .Where(s => s.IngredientId == ingredientId && s.IsActive)
                 .ToListAsync();
         }
     }

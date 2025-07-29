@@ -1,4 +1,4 @@
-@model SD_Restaurant.Web.Models.PaymentViewModel
+﻿@model SD_Restaurant.Web.Models.PaymentViewModel
 
 @{
     ViewData["Title"] = "Ödeme Düzenle";
@@ -17,15 +17,15 @@
                         <input type="hidden" asp-for="Id" />
                         <div class="row">
                             <div class="col-md-6">
-                                <div class="form-group">
-                                    <label asp-for="OrderId" class="control-label">Sipariş ID</label>
+                                <div class="mb-3">
+                                    <label asp-for="OrderId" class="form-label">Sipariş ID</label>
                                     <input asp-for="OrderId" class="form-control" />
                                     <span asp-validation-for="OrderId" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <div class="form-group">
-                                    <label asp-for="Amount" class="control-label">Tutar</label>
+                                <div class="mb-3">
+                                    <label asp-for="Amount" class="form-label">Tutar</label>
                                     <input asp-for="Amount" class="form-control" />
                                     <span asp-validation-for="Amount" class="text-danger"></span>
                                 </div>
@@ -33,31 +33,31 @@
                         </div>
                         <div class="row">
                             <div class="col-md-6">
-                                <div class="form-group">
-                                    <label asp-for="PaymentMethod" class="control-label">Ödeme Yöntemi</label>
+                                <div class="mb-3">
+                                    <label asp-for="PaymentMethod" class="form-label">Ödeme Yöntemi</label>
                                     <input asp-for="PaymentMethod" class="form-control" />
                                     <span asp-validation-for="PaymentMethod" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <div class="form-group">
-                                    <label asp-for="PaymentDate" class="control-label">Ödeme Tarihi</label>
+                                <div class="mb-3">
+                                    <label asp-for="PaymentDate" class="form-label">Ödeme Tarihi</label>
                                     <input asp-for="PaymentDate" class="form-control" type="datetime-local" />
                                     <span asp-validation-for="PaymentDate" class="text-danger"></span>
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label asp-for="Status" class="control-label">Durum</label>
+                        <div class="mb-3">
+                            <label asp-for="Status" class="form-label">Durum</label>
                             <input asp-for="Status" class="form-control" />
                             <span asp-validation-for="Status" class="text-danger"></span>
                         </div>
-                        <div class="form-group">
-                            <label asp-for="Notes" class="control-label">Notlar</label>
+                        <div class="mb-3">
+                            <label asp-for="Notes" class="form-label">Notlar</label>
                             <textarea asp-for="Notes" class="form-control" rows="3"></textarea>
                             <span asp-validation-for="Notes" class="text-danger"></span>
                         </div>
-                        <div class="form-group">
+                        <div class="mb-3">
                             <input type="submit" value="Güncelle" class="btn btn-primary" />
                             <a asp-action="Index" class="btn btn-secondary">Geri Dön</a>
                         </div>
@@ -70,3 +70,5 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 } 
+
+

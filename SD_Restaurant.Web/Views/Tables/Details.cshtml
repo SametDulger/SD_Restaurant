@@ -1,58 +1,165 @@
-@model SD_Restaurant.Web.Models.TableViewModel
+﻿@model SD_Restaurant.Web.Models.TableViewModel
 
 @{
     ViewData["Title"] = "Masa Detayı";
 }
 
-<div class="container">
-    <h2>Masa Detayı</h2>
-
-    <div class="row">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="card-title">Masa @Model.TableNumber</h4>
-                    <hr />
-                    <dl class="row">
-                        <dt class="col-sm-3">Masa ID:</dt>
-                        <dd class="col-sm-9">@Model.Id</dd>
-
-                        <dt class="col-sm-3">Masa Numarası:</dt>
-                        <dd class="col-sm-9">@Model.TableNumber</dd>
-
-                        <dt class="col-sm-3">Kapasite:</dt>
-                        <dd class="col-sm-9">@Model.Capacity kişi</dd>
-
-                        <dt class="col-sm-3">Durum:</dt>
-                        <dd class="col-sm-9">
-                            <span class="badge badge-@(Model.Status == "Boş" ? "success" : Model.Status == "Dolu" ? "danger" : "warning")">
-                                @Model.Status
-                            </span>
-                        </dd>
-
-                        <dt class="col-sm-3">Konum:</dt>
-                        <dd class="col-sm-9">@Model.Location</dd>
-
-                        <dt class="col-sm-3">Aktif mi:</dt>
-                        <dd class="col-sm-9">@(Model.IsActive ? "Evet" : "Hayır")</dd>
-
-                        <dt class="col-sm-3">Oluşturulma Tarihi:</dt>
-                        <dd class="col-sm-9">@Model.CreatedDate.ToString("dd/MM/yyyy HH:mm")</dd>
-
-                        @if (Model.UpdatedDate.HasValue)
-                        {
-                            <dt class="col-sm-3">Güncellenme Tarihi:</dt>
-                            <dd class="col-sm-9">@Model.UpdatedDate.Value.ToString("dd/MM/yyyy HH:mm")</dd>
-                        }
-                    </dl>
+<div class="container-fluid fade-in">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="h3 mb-0 text-gradient">
+                        <i class="fas fa-chair me-2"></i>Masa Detayı
+                    </h1>
+                    <p class="text-muted mb-0">Masa @Model.TableNumber bilgileri</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">
+                        <i class="fas fa-edit me-2"></i>Düzenle
+                    </a>
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Geri Dön
+                    </a>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="mt-3">
-        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Düzenle</a>
-        <a asp-action="Index" class="btn btn-secondary">Listeye Dön</a>
-        <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">Sil</a>
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="card-title mb-0">
+                        <i class="fas fa-info-circle me-2"></i>Masa @Model.TableNumber Bilgileri
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <dl class="row">
+                                <dt class="col-sm-4 text-muted">Masa ID:</dt>
+                                <dd class="col-sm-8"><strong>@Model.Id</strong></dd>
+
+                                <dt class="col-sm-4 text-muted">Masa Numarası:</dt>
+                                <dd class="col-sm-8"><strong>@Model.TableNumber</strong></dd>
+
+                                <dt class="col-sm-4 text-muted">Kapasite:</dt>
+                                <dd class="col-sm-8">
+                                    <span class="badge bg-info">@Model.Capacity kişi</span>
+                                </dd>
+
+                                <dt class="col-sm-4 text-muted">Konum:</dt>
+                                <dd class="col-sm-8">@Model.Location</dd>
+                            </dl>
+                        </div>
+                        <div class="col-md-6">
+                            <dl class="row">
+                                <dt class="col-sm-4 text-muted">Durum:</dt>
+                                <dd class="col-sm-8">
+                                    @{
+                                        var statusClass = Model.Status switch
+                                        {
+                                            "Available" => "success",
+                                            "Occupied" => "danger",
+                                            "Reserved" => "warning",
+                                            "Maintenance" => "secondary",
+                                            _ => "info"
+                                        };
+                                        var statusText = Model.Status switch
+                                        {
+                                            "Available" => "Boş",
+                                            "Occupied" => "Dolu",
+                                            "Reserved" => "Rezerve",
+                                            "Maintenance" => "Bakım",
+                                            _ => Model.Status
+                                        };
+                                    }
+                                    <span class="badge bg-@statusClass">@statusText</span>
+                                </dd>
+
+                                <dt class="col-sm-4 text-muted">Aktif mi:</dt>
+                                <dd class="col-sm-8">
+                                    @if (Model.IsActive)
+                                    {
+                                        <span class="badge bg-success"><i class="fas fa-check me-1"></i>Evet</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger"><i class="fas fa-times me-1"></i>Hayır</span>
+                                    }
+                                </dd>
+
+                                <dt class="col-sm-4 text-muted">Oluşturulma:</dt>
+                                <dd class="col-sm-8">@Model.CreatedDate.ToString("dd/MM/yyyy HH:mm")</dd>
+
+                                @if (Model.UpdatedDate.HasValue)
+                                {
+                                    <dt class="col-sm-4 text-muted">Güncellenme:</dt>
+                                    <dd class="col-sm-8">@Model.UpdatedDate.Value.ToString("dd/MM/yyyy HH:mm")</dd>
+                                }
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-chart-bar me-2"></i>Masa İstatistikleri
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-3">
+                        <div class="display-4 text-primary">@Model.Capacity</div>
+                        <div class="text-muted">Maksimum Kapasite</div>
+                    </div>
+                    
+                    <div class="list-group list-group-flush">
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>Durum</span>
+                            <span class="badge bg-@statusClass">@statusText</span>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>Aktiflik</span>
+                            @if (Model.IsActive)
+                            {
+                                <span class="badge bg-success">Aktif</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">Pasif</span>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mt-3">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-tools me-2"></i>Hızlı İşlemler
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary">
+                            <i class="fas fa-edit me-2"></i>Masa Düzenle
+                        </a>
+                        <a asp-controller="Orders" asp-action="Create" asp-route-tableId="@Model.Id" class="btn btn-outline-success">
+                            <i class="fas fa-plus me-2"></i>Sipariş Al
+                        </a>
+                        <a asp-controller="Reservations" asp-action="Create" asp-route-tableId="@Model.Id" class="btn btn-outline-info">
+                            <i class="fas fa-calendar-plus me-2"></i>Rezervasyon
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div> 
+
+

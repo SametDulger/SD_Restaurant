@@ -3,6 +3,7 @@ using SD_Restaurant.Application.DTOs;
 using SD_Restaurant.Core.Entities;
 using SD_Restaurant.Core.Repositories;
 using SD_Restaurant.Application.Services;
+using SD_Restaurant.Core.Enums;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
@@ -60,7 +61,7 @@ namespace SD_Restaurant.Application.Services
             return true;
         }
 
-        public async Task<IEnumerable<TableDto>> GetTablesByStatusAsync(string status)
+        public async Task<IEnumerable<TableDto>> GetTablesByStatusAsync(TableStatus status)
         {
             var tables = await _tableRepository.FindAsync(t => t.Status == status);
             return _mapper.Map<IEnumerable<TableDto>>(tables);
@@ -72,7 +73,7 @@ namespace SD_Restaurant.Application.Services
             return _mapper.Map<IEnumerable<TableDto>>(tables);
         }
 
-        public async Task<bool> UpdateTableStatusAsync(int id, string status)
+        public async Task<bool> UpdateTableStatusAsync(int id, TableStatus status)
         {
             var table = await _tableRepository.GetByIdAsync(id);
             if (table == null)

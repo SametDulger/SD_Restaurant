@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using SD_Restaurant.Core.Enums;
 
 namespace SD_Restaurant.Core.Entities
 {
@@ -12,7 +13,7 @@ namespace SD_Restaurant.Core.Entities
         public decimal Amount { get; set; }
         
         [Required]
-        public string PaymentMethod { get; set; } = string.Empty; // Nakit, Kredi Kartı, Banka Kartı
+        public PaymentMethod PaymentMethod { get; set; }
         
         public string Currency { get; set; } = "₺";
         
@@ -21,7 +22,7 @@ namespace SD_Restaurant.Core.Entities
         [MaxLength(100)]
         public string? TransactionId { get; set; }
         
-        public string? Status { get; set; } // Başarılı, Başarısız, Beklemede
+        public PaymentStatus Status { get; set; } = PaymentStatus.Pending;
         
         [MaxLength(500)]
         public string? Notes { get; set; }

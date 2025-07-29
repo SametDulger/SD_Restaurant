@@ -1,0 +1,266 @@
+﻿@model SD_Restaurant.Web.Models.CustomerAnalysisViewModel
+
+@{
+    ViewData["Title"] = "Müşteri Analizi";
+}
+
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="h3 mb-0">
+                        <i class="fas fa-users me-2"></i>Müşteri Analizi
+                    </h1>
+                    <p class="text-muted mb-0">Müşteri davranışları ve segmentasyon analizi</p>
+                </div>
+                <div>
+                    <a asp-action="Download" asp-route-reportType="customers" class="btn btn-outline-success">
+                        <i class="fas fa-download me-1"></i>CSV İndir
+                    </a>
+                    <a asp-action="Index" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-1"></i>Geri Dön
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- İstatistik Kartları -->
+    <div class="row g-4 mb-4">
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="bg-primary bg-opacity-10 rounded p-3">
+                                <i class="fas fa-users fa-2x text-primary"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h4 class="mb-1">@Model.TotalCustomers</h4>
+                            <p class="text-muted mb-0">Toplam Müşteri</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="bg-success bg-opacity-10 rounded p-3">
+                                <i class="fas fa-user-plus fa-2x text-success"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h4 class="mb-1">@Model.NewCustomersThisMonth</h4>
+                            <p class="text-muted mb-0">Bu Ay Yeni Müşteri</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="bg-warning bg-opacity-10 rounded p-3">
+                                <i class="fas fa-crown fa-2x text-warning"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h4 class="mb-1">@Model.VIPCustomers</h4>
+                            <p class="text-muted mb-0">VIP Müşteri</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="bg-info bg-opacity-10 rounded p-3">
+                                <i class="fas fa-building fa-2x text-info"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h4 class="mb-1">@Model.CorporateCustomers</h4>
+                            <p class="text-muted mb-0">Kurumsal Müşteri</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Grafikler -->
+    <div class="row g-4 mb-4">
+        <div class="col-xl-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">
+                        <i class="fas fa-chart-pie me-2"></i>Müşteri Tipi Dağılımı
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="customerTypeChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">
+                        <i class="fas fa-chart-bar me-2"></i>Aylık Yeni Müşteri Trendi
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="newCustomerChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Müşteri Listesi -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">
+                        <i class="fas fa-list me-2"></i>Müşteri Listesi
+                    </h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.Customers.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Ad Soyad</th>
+                                        <th>E-posta</th>
+                                        <th>Telefon</th>
+                                        <th>Tip</th>
+                                        <th>Kayıt Tarihi</th>
+                                        <th>İşlemler</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var customer in Model.Customers.Take(15))
+                                    {
+                                        <tr>
+                                            <td>#@customer.Id</td>
+                                            <td>@customer.FirstName @customer.LastName</td>
+                                            <td>@customer.Email</td>
+                                            <td>@customer.Phone</td>
+                                            <td>
+                                                <span class="badge bg-@(customer.CustomerType switch {
+                                                    "VIP" => "warning",
+                                                    "Corporate" => "info",
+                                                    "Regular" => "secondary",
+                                                    _ => "secondary"
+                                                })">@customer.CustomerType</span>
+                                            </td>
+                                            <td>@customer.CreatedDate.ToString("dd/MM/yyyy")</td>
+                                            <td>
+                                                <a asp-controller="Customers" asp-action="Details" asp-route-id="@customer.Id" class="btn btn-sm btn-outline-primary">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-4">
+                            <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                            <h5 class="text-muted">Henüz müşteri verisi bulunmuyor</h5>
+                            <p class="text-muted">Sistemde kayıtlı müşteri bulunamadı.</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Müşteri tipi dağılımı pasta grafiği
+            const customerTypeCtx = document.getElementById('customerTypeChart').getContext('2d');
+            new Chart(customerTypeCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Düzenli', 'VIP', 'Kurumsal'],
+                    datasets: [{
+                        data: [@Model.RegularCustomers, @Model.VIPCustomers, @Model.CorporateCustomers],
+                        backgroundColor: [
+                            '#6c757d',
+                            '#ffc107',
+                            '#17a2b8'
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+
+            // Aylık yeni müşteri trendi çizgi grafiği
+            const newCustomerCtx = document.getElementById('newCustomerChart').getContext('2d');
+            new Chart(newCustomerCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Oca', 'Åub', 'Mar', 'Nis', 'May', 'Haz', 'Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara'],
+                    datasets: [{
+                        label: 'Yeni Müşteriler',
+                        data: [15, 22, 18, 25, 30, 28, 35, 32, 40, 38, 45, 42],
+                        borderColor: '#28a745',
+                        backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+} 
+

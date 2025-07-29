@@ -7,7 +7,6 @@ namespace SD_Restaurant.Core.Repositories
     public interface IProductRepository : IGenericRepository<Product>
     {
         Task<IEnumerable<Product>> GetProductsByCategoryAsync(int categoryId);
-        Task<IEnumerable<Product>> GetProductsWithRecipesAsync();
         Task<Product?> GetProductWithRecipesAsync(int productId);
         Task<IEnumerable<Product>> GetLowStockProductsAsync();
         Task<IEnumerable<Product>> SearchProductsAsync(string searchTerm);

@@ -3,6 +3,7 @@ using SD_Restaurant.Application.DTOs;
 using SD_Restaurant.Core.Entities;
 using SD_Restaurant.Core.Repositories;
 using SD_Restaurant.Application.Services;
+using SD_Restaurant.Core.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,7 +41,7 @@ namespace SD_Restaurant.Application.Services
             var order = _mapper.Map<Order>(createOrderDto);
             order.OrderNumber = await _orderRepository.GenerateOrderNumberAsync();
             order.OrderDate = DateTime.UtcNow;
-            order.Status = "Beklemede";
+            order.Status = OrderStatus.Pending;
             order.CreatedDate = DateTime.UtcNow;
             
             var createdOrder = await _orderRepository.AddAsync(order);
@@ -81,9 +82,9 @@ namespace SD_Restaurant.Application.Services
             return _mapper.Map<IEnumerable<OrderDto>>(orders);
         }
 
-        public async Task<IEnumerable<OrderDto>> GetOrdersByStatusAsync(string status)
+        public async Task<IEnumerable<OrderDto>> GetOrdersByStatusAsync(OrderStatus status)
         {
-            var orders = await _orderRepository.GetOrdersByStatusAsync(status);
+            var orders = await _orderRepository.GetOrdersByStatusAsync(status.ToString());
             return _mapper.Map<IEnumerable<OrderDto>>(orders);
         }
 
@@ -117,7 +118,7 @@ namespace SD_Restaurant.Application.Services
                 if (stock != null && stock.Quantity >= item.Quantity)
                 {
                     await _stockRepository.UpdateStockQuantityAsync(item.ProductId, "Depo", stock.Quantity - item.Quantity);
-                    item.Status = "Hazırlanıyor";
+                    item.Status = OrderStatus.InPreparation;
                 }
                 else
                 {
@@ -125,7 +126,7 @@ namespace SD_Restaurant.Application.Services
                 }
             }
 
-            order.Status = "Hazırlanıyor";
+            order.Status = OrderStatus.InPreparation;
             order.UpdatedDate = DateTime.UtcNow;
             await _orderRepository.UpdateAsync(order);
 

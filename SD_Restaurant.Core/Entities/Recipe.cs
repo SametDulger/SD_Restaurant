@@ -9,7 +9,7 @@ namespace SD_Restaurant.Core.Entities
         public virtual Product? Product { get; set; }
         
         public int IngredientId { get; set; }
-        public virtual Product? Ingredient { get; set; }
+        public virtual Ingredient? Ingredient { get; set; }
         
         [Required]
         public decimal Quantity { get; set; }

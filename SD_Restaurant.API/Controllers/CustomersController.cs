@@ -18,79 +18,93 @@ namespace SD_Restaurant.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CustomerDto>>> GetCustomers()
+        public async Task<ActionResult<ApiResponse<IEnumerable<CustomerDto>>>> GetCustomers()
         {
             var customers = await _customerService.GetAllCustomersAsync();
-            return Ok(customers);
+            return Ok(ApiResponse<IEnumerable<CustomerDto>>.SuccessResult(customers, "Müşteriler başarıyla getirildi"));
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<CustomerDto>> GetCustomer(int id)
+        public async Task<ActionResult<ApiResponse<CustomerDto>>> GetCustomer(int id)
         {
             var customer = await _customerService.GetCustomerByIdAsync(id);
             if (customer == null)
             {
-                return NotFound();
+                return NotFound(ApiResponse<CustomerDto>.ErrorResult("Müşteri bulunamadı"));
             }
-            return Ok(customer);
+            return Ok(ApiResponse<CustomerDto>.SuccessResult(customer, "Müşteri başarıyla getirildi"));
         }
 
         [HttpGet("search")]
-        public async Task<ActionResult<IEnumerable<CustomerDto>>> SearchCustomers([FromQuery] string term)
+        public async Task<ActionResult<ApiResponse<IEnumerable<CustomerDto>>>> SearchCustomers([FromQuery] string term)
         {
             if (string.IsNullOrWhiteSpace(term))
             {
-                return BadRequest("Search term is required");
+                return BadRequest(ApiResponse<IEnumerable<CustomerDto>>.ErrorResult("Arama terimi gerekli"));
             }
 
             var customers = await _customerService.SearchCustomersAsync(term);
-            return Ok(customers);
+            return Ok(ApiResponse<IEnumerable<CustomerDto>>.SuccessResult(customers, "Arama sonuçları"));
         }
 
         [HttpPost]
-        public async Task<ActionResult<CustomerDto>> CreateCustomer(CreateCustomerDto createCustomerDto)
+        public async Task<ActionResult<ApiResponse<CustomerDto>>> CreateCustomer(CreateCustomerDto createCustomerDto)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(ApiResponse<CustomerDto>.ErrorResult("Geçersiz veri", GetModelStateErrors()));
             }
 
             var createdCustomer = await _customerService.CreateCustomerAsync(createCustomerDto);
-            return CreatedAtAction(nameof(GetCustomer), new { id = createdCustomer.Id }, createdCustomer);
+            return CreatedAtAction(nameof(GetCustomer), new { id = createdCustomer.Id }, 
+                ApiResponse<CustomerDto>.SuccessResult(createdCustomer, "Müşteri başarıyla oluşturuldu"));
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateCustomer(int id, UpdateCustomerDto updateCustomerDto)
+        public async Task<ActionResult<ApiResponse<object>>> UpdateCustomer(int id, UpdateCustomerDto updateCustomerDto)
         {
             if (id != updateCustomerDto.Id)
             {
-                return BadRequest();
+                return BadRequest(ApiResponse<object>.ErrorResult("ID uyumsuzluğu"));
             }
 
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(ApiResponse<object>.ErrorResult("Geçersiz veri", GetModelStateErrors()));
             }
 
             var result = await _customerService.UpdateCustomerAsync(updateCustomerDto);
             if (!result)
             {
-                return NotFound();
+                return NotFound(ApiResponse<object>.ErrorResult("Müşteri bulunamadı"));
             }
 
-            return NoContent();
+            return Ok(ApiResponse<object>.SuccessResult(new object(), "Müşteri başarıyla güncellendi"));
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCustomer(int id)
+        public async Task<ActionResult<ApiResponse<object>>> DeleteCustomer(int id)
         {
             var result = await _customerService.DeleteCustomerAsync(id);
             if (!result)
             {
-                return NotFound();
+                return NotFound(ApiResponse<object>.ErrorResult("Müşteri bulunamadı"));
             }
 
-            return NoContent();
+            return Ok(ApiResponse<object>.SuccessResult(new object(), "Müşteri başarıyla silindi"));
+        }
+
+        private List<string> GetModelStateErrors()
+        {
+            var errors = new List<string>();
+            foreach (var modelState in ModelState.Values)
+            {
+                foreach (var error in modelState.Errors)
+                {
+                    errors.Add(error.ErrorMessage);
+                }
+            }
+            return errors;
         }
     }
 } 

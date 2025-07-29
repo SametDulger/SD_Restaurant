@@ -2,100 +2,233 @@
 <html lang="tr">
 <head>
     <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - SD Restaurant</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-gradient">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
-                    <i class="fas fa-utensils"></i> SD Restaurant
+                <a class="navbar-brand d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="Index">
+                    <i class="fas fa-utensils me-2"></i>
+                    <span class="brand-text">SD Restaurant</span>
                 </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+                
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" 
+                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                
+                <div class="navbar-collapse collapse d-lg-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Index">
-                                <i class="fas fa-home"></i> Ana Sayfa
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">
+                                <i class="fas fa-home me-1"></i> Ana Sayfa
                             </a>
                         </li>
+                        
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle text-light" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-cogs"></i> Yönetim
+                            <a class="nav-link dropdown-toggle" href="#" id="managementDropdown" role="button" 
+                               data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-cogs me-1"></i> Yönetim
                             </a>
-                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="managementDropdown">
                                 <li><a class="dropdown-item" asp-controller="Categories" asp-action="Index">
-                                    <i class="fas fa-tags"></i> Kategoriler
+                                    <i class="fas fa-tags me-2"></i> Kategoriler
                                 </a></li>
                                 <li><a class="dropdown-item" asp-controller="Products" asp-action="Index">
-                                    <i class="fas fa-box"></i> Ürünler
+                                    <i class="fas fa-box me-2"></i> Ürünler
                                 </a></li>
                                 <li><a class="dropdown-item" asp-controller="Recipes" asp-action="Index">
-                                    <i class="fas fa-book-open"></i> Tarifler
+                                    <i class="fas fa-book-open me-2"></i> Tarifler
                                 </a></li>
                                 <li><a class="dropdown-item" asp-controller="Stocks" asp-action="Index">
-                                    <i class="fas fa-warehouse"></i> Stoklar
+                                    <i class="fas fa-warehouse me-2"></i> Stoklar
+                                </a></li>
+                                <li><a class="dropdown-item" asp-controller="Ingredients" asp-action="Index">
+                                    <i class="fas fa-carrot me-2"></i> Malzemeler
                                 </a></li>
                             </ul>
                         </li>
+                        
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle text-light" href="#" id="restaurantDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-concierge-bell"></i> Restoran
+                            <a class="nav-link dropdown-toggle" href="#" id="restaurantDropdown" role="button" 
+                               data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-concierge-bell me-1"></i> Restoran
                             </a>
-                            <ul class="dropdown-menu" aria-labelledby="restaurantDropdown">
+                            <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="restaurantDropdown">
                                 <li><a class="dropdown-item" asp-controller="Tables" asp-action="Index">
-                                    <i class="fas fa-chair"></i> Masalar
+                                    <i class="fas fa-chair me-2"></i> Masalar
                                 </a></li>
                                 <li><a class="dropdown-item" asp-controller="Customers" asp-action="Index">
-                                    <i class="fas fa-users"></i> Müşteriler
+                                    <i class="fas fa-users me-2"></i> Müşteriler
                                 </a></li>
                                 <li><a class="dropdown-item" asp-controller="Employees" asp-action="Index">
-                                    <i class="fas fa-user-tie"></i> Çalışanlar
+                                    <i class="fas fa-user-tie me-2"></i> Çalışanlar
                                 </a></li>
                                 <li><a class="dropdown-item" asp-controller="Reservations" asp-action="Index">
-                                    <i class="fas fa-calendar-check"></i> Rezervasyonlar
+                                    <i class="fas fa-calendar-check me-2"></i> Rezervasyonlar
                                 </a></li>
                             </ul>
                         </li>
+                        
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle text-light" href="#" id="ordersDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-shopping-cart"></i> Siparişler
+                            <a class="nav-link dropdown-toggle" href="#" id="ordersDropdown" role="button" 
+                               data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-shopping-cart me-1"></i> Siparişler
                             </a>
-                            <ul class="dropdown-menu" aria-labelledby="ordersDropdown">
+                            <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="ordersDropdown">
                                 <li><a class="dropdown-item" asp-controller="Orders" asp-action="Index">
-                                    <i class="fas fa-list"></i> Tüm Siparişler
+                                    <i class="fas fa-list me-2"></i> Tüm Siparişler
                                 </a></li>
                                 <li><a class="dropdown-item" asp-controller="Payments" asp-action="Index">
-                                    <i class="fas fa-credit-card"></i> Ödemeler
+                                    <i class="fas fa-credit-card me-2"></i> Ödemeler
+                                </a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="#">
+                                    <i class="fas fa-chart-line me-2"></i> Sipariş Raporları
+                                </a></li>
+                                <li><a class="dropdown-item" href="#">
+                                    <i class="fas fa-clock me-2"></i> Bekleyen Siparişler
+                                </a></li>
+                            </ul>
+                        </li>
+                        
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="reportsDropdown" role="button" 
+                               data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-chart-bar me-1"></i> Raporlar
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="reportsDropdown">
+                                <li><a class="dropdown-item" asp-controller="Reports" asp-action="Index">
+                                    <i class="fas fa-chart-bar me-2"></i> Tüm Raporlar
+                                </a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" asp-controller="Reports" asp-action="Sales">
+                                    <i class="fas fa-chart-pie me-2"></i> Satış Raporları
+                                </a></li>
+                                <li><a class="dropdown-item" asp-controller="Reports" asp-action="CustomerAnalysis">
+                                    <i class="fas fa-users me-2"></i> Müşteri Analizi
+                                </a></li>
+                                <li><a class="dropdown-item" asp-controller="Reports" asp-action="Stock">
+                                    <i class="fas fa-warehouse me-2"></i> Stok Raporları
+                                </a></li>
+                                <li><a class="dropdown-item" asp-controller="Reports" asp-action="Reservations">
+                                    <i class="fas fa-calendar me-2"></i> Rezervasyon Raporları
                                 </a></li>
                             </ul>
                         </li>
                     </ul>
+                    
+                    <div class="navbar-nav">
+                        @{
+                            var username = Context.Session.GetString("Username");
+                            if (!string.IsNullOrEmpty(username))
+                            {
+                                <div class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" 
+                                       data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fas fa-user-circle me-1"></i> @username
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="userDropdown">
+                                        <li><a class="dropdown-item" asp-controller="Auth" asp-action="Profile">
+                                            <i class="fas fa-user me-2"></i> Profil
+                                        </a></li>
+                                        <li><a class="dropdown-item" asp-controller="Auth" asp-action="ChangePassword">
+                                            <i class="fas fa-key me-2"></i> Şifre Değiştir
+                                        </a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <form asp-controller="Auth" asp-action="Logout" method="post" style="display: inline;">
+                                                <button type="submit" class="dropdown-item">
+                                                    <i class="fas fa-sign-out-alt me-2"></i> Çıkış
+                                                </button>
+                                            </form>
+                                        </li>
+                                    </ul>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="nav-item">
+                                    <a class="nav-link" asp-controller="Auth" asp-action="Login">
+                                        <i class="fas fa-sign-in-alt me-1"></i> Giriş Yap
+                                    </a>
+                                </div>
+                                <div class="nav-item">
+                                    <a class="nav-link" asp-controller="Auth" asp-action="Register">
+                                        <i class="fas fa-user-plus me-1"></i> Kayıt Ol
+                                    </a>
+                                </div>
+                            }
+                        }
+                    </div>
                 </div>
             </div>
         </nav>
     </header>
-    <div class="container-fluid">
+    
+    <div class="main-container">
         <main role="main" class="pb-3">
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fas fa-check-circle me-2"></i>
+                    @TempData["Success"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+            
+            @if (TempData["Message"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fas fa-check-circle me-2"></i>
+                    @TempData["Message"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+            
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fas fa-exclamation-circle me-2"></i>
+                    @TempData["Error"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+            
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+    <footer class="footer mt-auto py-3">
         <div class="container">
-            &copy; 2025 - SD Restaurant - <a asp-area="" asp-controller="Home" asp-action="Privacy">Gizlilik</a>
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <span class="text-muted">&copy; 2025 - SD Restaurant. Tüm hakları saklıdır.</span>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <a class="text-muted text-decoration-none me-3" asp-area="" asp-controller="Home" asp-action="Privacy">
+                        <i class="fas fa-shield-alt me-1"></i>Gizlilik
+                    </a>
+                    <a class="text-muted text-decoration-none" href="#">
+                        <i class="fas fa-question-circle me-1"></i>Yardım
+                    </a>
+                </div>
+            </div>
         </div>
     </footer>
+    
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
+
+
