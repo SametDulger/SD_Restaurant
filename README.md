@@ -8,7 +8,6 @@
 > - 📚 **Eğitim ve öğrenme amaçlı** tasarlanmıştır
 > - 🚧 Production ortamında kullanım için **hazır değildir**
 > - 🔒 **Güvenlik önlemleri** alınması zorunludur
-> - 🛡️ [SECURITY.md](./SECURITY.md) dosyasını mutlaka okuyun
 > - ⚠️ Production kullanımı için ek test ve güvenlik önlemleri gereklidir
 
 Modern restaurant, cafe ve bar işletmelerinin günlük operasyonlarını dijitalleştirmek için geliştirilmiş kapsamlı bir yönetim sistemidir.
