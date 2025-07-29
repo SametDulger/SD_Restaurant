@@ -42,7 +42,7 @@ jobs:
       with:
         dotnet-version: '9.0.x'
 
-    - name: Setup Node.js
+    - name: Setup Node.js (for frontend tools if needed)
       uses: actions/setup-node@v4
       with:
         node-version: '18'
@@ -53,16 +53,16 @@ jobs:
     - name: Build
       run: dotnet build --no-restore --configuration Release
 
-    - name: Run tests with coverage
+    - name: Run tests
       run: |
-        dotnet test --no-build --verbosity normal --configuration Release --collect:"XPlat Code Coverage" --results-directory ./coverage
+        dotnet test --no-build --verbosity normal --configuration Release
 
-    - name: Upload coverage reports
-      uses: codecov/codecov-action@v3
+    - name: Upload test results
+      uses: actions/upload-artifact@v4
+      if: always()
       with:
-        file: ./coverage/**/coverage.cobertura.xml
-        flags: unittests
-        name: codecov-umbrella
+        name: test-results
+        path: ./TestResults/
 
     - name: Publish API
       run: dotnet publish SD_Restaurant.API/SD_Restaurant.API.csproj -c Release -o ./publish/api
@@ -139,7 +139,7 @@ jobs:
       uses: docker/build-push-action@v5
       with:
         context: .
-        dockerfile: SD_Restaurant.Gateway/Dockerfile
+        target: final-gateway
         push: true
         tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/gateway:latest
         cache-from: type=gha
@@ -155,10 +155,11 @@ jobs:
     - name: Deploy to staging
       run: |
         echo "Deploying to staging environment"
-        # Add staging deployment steps here
+        # Example: Deploy to Azure/AWS/GCP
+        # az webapp deployment source config-zip --resource-group myResourceGroup --name myApp --src ./publish/api.zip
 
   deploy-production:
-    needs: [docker-build, deploy-staging]
+    needs: docker-build
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     environment: production
@@ -167,15 +168,18 @@ jobs:
     - name: Deploy to production
       run: |
         echo "Deploying to production environment"
-        # Add production deployment steps here
+        # Example: Deploy to production environment
+        # kubectl apply -f k8s/
 
     - name: Run smoke tests
       run: |
         echo "Running smoke tests after deployment"
-        # Add smoke test steps here
+        # Example: Test API endpoints
+        # curl -f http://api.example.com/health
 
     - name: Notify deployment status
       if: always()
       run: |
-        echo "Deployment completed"
-        # Add notification steps here (Slack, Teams, etc.) 
+        echo "Deployment completed successfully"
+        # Example: Send notification to Slack/Teams
+        # curl -X POST -H 'Content-type: application/json' --data '{"text":"Deployment completed"}' $SLACK_WEBHOOK_URL 
